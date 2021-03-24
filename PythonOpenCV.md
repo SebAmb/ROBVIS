@@ -126,9 +126,9 @@ res_r = cv2.bitwise_and(image,image, mask= mask_r)
 cv2.imshow('Green',res_g)
 ```
 
-## Gestion de la souris
+### Gestion de la souris et crop d'une image
 
-Voici quelques lignes de codes pour extraire une région d'intérêt à la souris. Grâce à ces quelques lignes il vous sera possible de calculer la valeur moyenne et la variance de chaque composante de l'image, utile pour procéder ensuite à une étape de segmentation.
+Voici quelques lignes de codes pour extraire une région d'intérêt à la souris. Grâce à ces quelques lignes il vous sera possible de n'appliquer les lignes précédentes que sur une région de l'image. Mieux encore, cela vous permettra de calculer la valeur moyenne et la variance des composantes d'une partie de l'image, afin de "filtrer" les régions qui lui ressemblent (du point de vue colorimétrique). Dans cet exemple, l'image n'est pas chargée de votre disque dur mais a été acquise via votre webcam.
 
 ```
 import cv2
@@ -136,18 +136,22 @@ import numpy as np
  
 if __name__ == '__main__' :
  
+    # initialisation de la webcam
     cap=cv2.VideoCapture(0)
-
-    # capture an image
+    
+    # capture d'une image
     ret, frame=cap.read()
      
-    # Select ROI
+    # sélection d'une régions d'intérêt (ROI) à la souris
     r = cv2.selectROI(frame)
+    
+    # print les informations la région sélectionnée
+    print("coin (x,y) = (",r[1],",",r[0],") - taille (dx,dy) = (",r[2],",",r[3],")")
      
-    # Crop image
+    # image croppée (création de la sous-image sélectionnée)
     imCrop = frame[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
  
-    # Display cropped image
+    # affichage de l'image croppée
     cv2.imshow("Image", imCrop)
     cv2.waitKey(0)
 ```
