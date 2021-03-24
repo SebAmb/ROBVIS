@@ -34,6 +34,8 @@ Si tout a été installé convenablement, alors chacune des lignes précédentes
 
 ## Les bases
 
+### Lecture/Ecriture/affichage d'images
+
 Créer le script suivant qui charge une image de votre disque et l'affiche sur votre écran via le module cv2.
 Veillez à renseigner le chemin et nom de l'image que vous souhaitez afficher (ici .png).
 ```
@@ -57,9 +59,72 @@ A partir du script d'acquisition que M. Boonaert vous a remis et notamment de la
 créer la fonction ```DisplayImage()``` permettant d'afficher dans une fenêtre OpenCV l'image que vous venez d'acquérir.
 Ajouter cette fonction dans un nouveau script que vous nommerez ```ComputerVisionNom1Nom2.py```
 (Nom1 et Nom2 sont les noms des étudiants de votre groupe)
+Ce script pourra contenir toutes les fonctions que vous aurez développées pour le projet de cette UV.
+
+### Tratement et analyse couleur
+
+Nous allons désormais faire quelques manipulations du contenu colorimétrique des images que vous aurez à traiter.
+Vous savez qu'une image couleur est de base codée en trois canaux RGB et qu'il est possible de la représenter 
+dans un autre espace colorimétrique tel que HSV (Teinte/Saturation/Luminance). Toutefois, seule la représentation RGB
+peut être afficher sur votre écran.
+
+Vous accèdez aux valeurs de chaque pixel dans chaque canal par les lignes suivantes. Attention, il faut noter qu'OpenCV ne 
+représente évidement pas les trois canaux dans l'ordre habituel i.e. RGB mais dans l'ordre BGR. Donc le premier canal (0) est
+la composante bleu :
+```
+blues = image[:, :, 0]
+greens = image[:, :, 1]
+reds = image[:, :, 2]
+```
+Les lignes de codes suivantes vous permettent de seuiller les composantes selons certaines valeur afin de mettre en évidence
+que les parties de l'image qui vous intéressent. Dans cet exemple l'image est convertie en HSV. Dans un premier temps, sont définies
+les valeurs min et max pour le vert, le rouge et le bleu selon la représentation HSV : c'est pour cela que seule la première valeur
+varie...50/60 pour le vert, 170/180 pour le rouge et 110/120 pour le bleu. Puis trois masques sont produits à partir de ces 3 intervalles :
+un masque est une image contenant des valeurs 1 ou 0 : un pixel prend la valeur 1 lorsque les valeurs HSV du pixels correspondant
+est dans l'un des intervalles définis précédemment. Ces trois masques sont finalement utilisés pour effacer les parties de l'image RGB
+qui ne respectent pas les contraintes colorimétriques imposées.
+
+```
+import cv2
+
+# importer la librairie numpy
+import numpy as np 
+
+image = cv2.imread('filtering.png')
+
+# cettte image est resizée afin de réduire la quantité de pixels à traiter
+image = cv2.resize(image,(300,300))
+
+# changement d'espace colorimétrique
+# ici BGR vers HSV : COLOR_BGR2HSV
+hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+# défintion des contraintes min et max sur les composantes ici seule la teinte
+# est contrainte
+min_green = np.array([50,220,220])
+max_green = np.array([60,255,255])
+
+min_red = np.array([170,220,220])
+max_red = np.array([180,255,255])
+
+min_blue = np.array([110,220,220])
+max_blue = np.array([120,255,255])
 
 
+# création des masques à partir des limites précédentes
+mask_g = cv2.inRange(hsv, min_green, max_green)
+mask_r = cv2.inRange(hsv, min_red, max_red)
+mask_b = cv2.inRange(hsv, min_blue, max_blue)
 
+# application des masques sur l'image RGB afin de ne garder que les parties qui
+#nous intéressent.
+res_b = cv2.bitwise_and(image, image, mask= mask_b)
+res_g = cv2.bitwise_and(image,image, mask= mask_g)
+res_r = cv2.bitwise_and(image,image, mask= mask_r)
+
+# affichage de l'image après sélection de la partie "verte" de l'image
+cv2.imshow('Green',res_g)
+```
 
 ## Gestion de la souris
 
