@@ -230,7 +230,7 @@ mask=cv2.dilate(mask, None, iterations=4)
 
 Ajouter une ou une ombinaison de ces 3 lignes dans le script précédent afin de voir leur effet. Vous pourrez jouer sur les différents paramètres afin de mesurer son effet sur le résultat.
 
-## Histogramme d'une image
+### Histogramme d'une image
 
 L'histrogramme représente la distribution des valeurs de tous les pixels de tout ou partie d'une image. OpenCV propose de calculer cet histrogramme avec la fonction cv2.calcHist() de la manière suivante :
 ```
@@ -253,7 +253,8 @@ masked_img = cv2.bitwise_and(img,img,mask = mask)
 ```
 Pour comparer, afficher l'image complète et son histogramme puis la région de l'image sélectionnée et son histogramme.
 
-## Détection/reconnaissance d'objets
+## Reconnaissance d'objets
+### Par l'histogramme
 L'histogramme peut être utilisé pour détecter un objet particulier. Pour cela nous utilisons la fonction ```cv.CompareHIst(hist_requete,hist_candidat,method)``` où method prend l'une des valeurs suivantes cv2.HISTCMP_CORREL (0), cv2.HISTCMP_CHISQR (1), cv2.HISTCMP_INTERSECT(2) ou cv2.HISTCMP_BHATTACHARYYA (3). Tester les lignes de codes suivantes :
 ```
 from __future__ import print_function
@@ -299,27 +300,30 @@ for compare_method in range(4):
     base_half = cv.compareHist(hist_base, hist_half_down, compare_method)
     base_test1 = cv.compareHist(hist_base, hist_test1, compare_method)
     base_test2 = cv.compareHist(hist_base, hist_test2, compare_method)
+    
+    # affiche les résultats de l'opérateur de comparaison
     print('Method:', compare_method, 'Perfect, Base-Half, Base-Test(1), Base-Test(2) :',\
           base_base, '/', base_half, '/', base_test1, '/', base_test2)
 ```
 
-```cv.compareHist``` fournit les meilleurs résultats lorsque nous comparons les histogrammes provenant de la même image (heureusement). Ce qui nous permet de vérifier que lorsque la correspondance entre les histogrammes est parfait les métriques HISTCMP_CORREL et HISTCMP_INTERSECT donnent les valeurs max et pour les deux autres métriques la valeur est minimale.
+```cv.compareHist``` fournit les meilleurs résultats lorsque nous comparons les histogrammes provenant de la même image (heureusement). Ce qui nous permet de vérifier que lorsque la correspondance entre les histogrammes est parfaite les métriques HISTCMP_CORREL et HISTCMP_INTERSECT donnent les valeurs max et pour les deux autres métriques la valeur est minimale.
 Cette méthode est pertinente lorsque vous avez déjà un ensemble de régions candidates dans une image pour lesquelles vous souhaitez savoir si elles correspondent à l'objet recherché (hist_requete).
 
-Une autre manière d'opérer la reconnaissance et d'utiliser la fonction ```cv2.matchTemplate``` qui recherche le template candidat (i.e. l'image de l'objet que nous recherchons) en la faisant "glisser" sur toute l'image. Voici quelques lignes de codes à tester cette fois sur une image en niveau de gris :
+### Par template matching 
+Une autre manière d'opérer la reconnaissance et d'utiliser la fonction ```cv2.matchTemplate``` qui recherche le template candidat i.e. l'image de l'objet que nous recherchons en la faisant "glisser" sur toute l'image. Voici quelques lignes de codes à tester cette fois sur une image en niveau de gris :
 
 ```
 import cv2
 import numpy as np
 
 # chargement d'une image
-img_rgb = cv2.imread('image.jpg')
+img_rgb = cv2.imread('roadsign.png')
 
 # conversio en niveau de gris (un seul canal)
 img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 
 # chargement de l'image template à rechercher
-template = cv2.imread('template.jpg',0)
+template = cv2.imread('sign_stop.png',0)
 w, h = template.shape[::-1]
 
 # seuil de décision qui valide ou non le matching
@@ -335,7 +339,31 @@ cv2.imshow('Detected',img_rgb)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 ```
+### Synthèse
 
+Ecrire un script capable de retrouver dans le flux de votre webcam une région de l'image que vous aurez préalablement sélectionnée à l'aide de votre souris.
+Il pourra s'agir d'un élément de votre visage par exemple (votre oeil, votre bouche ...).
+Vous utiliserez la fonction ```cv2.matchTemplate```. A chaque nouvelle image acquise, les régions candidates seront localisées grâce à un rectangle.
+Si votre caméra ne fonctionne pas vous utiliserez la vidéo chris2.mp4 et vous tenterez de retrouver un des éléments du visage de Chris.
+Pour ouvrir le flux d'une vidéo vous utiliserez les lignes de codes suivantes :
+
+```
+cap = cv2.VideoCapture('video.mp4')
+
+# Check if camera opened successfully
+if (cap.isOpened()== False):
+	  print("Error opening video stream or file")
+   
+# Read until video is completed
+while(cap.isOpened()):
+   # Capture frame-by-frame
+	  ret, frame = cap.read()
+	  if ret == True:
+       ... votre code ...
+   else:
+       break
+cap.release()
+```
 
 ## Détection d'ensemble de pixels connexes
 
