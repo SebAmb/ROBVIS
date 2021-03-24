@@ -156,7 +156,7 @@ if __name__ == '__main__' :
     cv2.waitKey(0)
 ```
 
-Voici quelques lignes de codes pour gérer des actions sur la souris. Elles gères les événements souris tels que le mouvement de la souris (), le double click milieu (EVENT_MBUTTONDBLCLK), le click droit (EVENT_RBUTTONDOWN) et le click gauche (EVENT_LBUTTONDOWN).
+Voici quelques lignes de codes pour gérer des actions sur la souris. Elles gères les événements souris tels que le mouvement de la souris (EVENT_MOUSEMOVE), le double click milieu (EVENT_MBUTTONDBLCLK), le click droit (EVENT_RBUTTONDOWN) et le click gauche (EVENT_LBUTTONDOWN). Attention, lorsque vous exécuterez cet exemple, le click droit peut ne pas fonctionner car déjà associé à un menu contextuel. Dans ce cas vous pourrez remplacer cv2.EVENT_RBUTTONDOWN par cv2.EVENT_MBUTTONDOWN.
 
 ```
 import cv2
@@ -201,8 +201,6 @@ while True:
     ret, frame=cap.read()
     image=cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask=cv2.inRange(image, lo, hi)
-    mask=cv2.erode(mask, None, iterations=1)
-    mask=cv2.dilate(mask, None, iterations=1)
     image2=cv2.bitwise_and(frame, frame, mask= mask)
     cv2.putText(frame, "Couleur: {:d}".format(color), (10, 30), cv2.FONT_HERSHEY_DUPLEX, 1, color_info, 1, cv2.LINE_AA)
     
@@ -222,16 +220,126 @@ cap.release()
 cv2.destroyAllWindows()
 ```
 
-## Segmentation d'images couleur par seuillage des composantes
-
-Généralement il est très intéressante de changer d'espace colorimétrique afin de mieux cibler l'espace dans lequel l'objet d'intérêt est discriminable : ```image=cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)```
-Après avoir produite le mask avec ```mask=cv2.inRange(image, lo, hi)``` il est parfois pertinant de débruiter l'image résultats en lissant ou par quelques opérations motrphologiques. Cela permet de fermer et remplir les formes :
+Après avoir produite le mask avec ```mask=cv2.inRange(image, lo, hi)``` il est parfois pertinant de débruiter l'image résultats en lissant ou par quelques opérations morphologiques (ouverture, fermeture, erosion, dilatation).
 ```
 image=cv2.blur(image, (7, 7))
+image = cv2.GaussianBlur(image, (11, 11), 0)
 mask=cv2.erode(mask, None, iterations=4)
 mask=cv2.dilate(mask, None, iterations=4)
 ```
-Détecter les éléments connexes dans le mask puis extraire les informations relatives à chaque forme extraite pounr leur visualisation :
+
+Ajouter une ou une ombinaison de ces 3 lignes dans le script précédent afin de voir leur effet. Vous pourrez jouer sur les différents paramètres afin de mesurer son effet sur le résultat.
+
+## Histogramme d'une image
+
+L'histrogramme représente la distribution des valeurs de tous les pixels de tout ou partie d'une image. OpenCV propose de calculer cet histrogramme avec la fonction cv2.calcHist() de la manière suivante :
+```
+import cv2
+from matplotlib import pyplot as plt
+img = cv2.imread('test_img.png')
+hist = cv2.calcHist([img],[0],None,[256],[0,256])
+plt.plot(hist,color='b')
+plt.show()
+```
+Pour une image en couleur, [0], [1], [2] indique respectivement que l'histogramme est calculé sur la composante B, G ou R de l'image. None indique qu'aucun masque n'est utilisé. Si un masque est désiré alors il faut le passer en paramètre. [256] indique le nombre de bins utilisé pour calculer l'histogramme. [0,256] indique l'intervalle des valeurs utilisé pour calculer l'histogramme. Ici tout l'intervalle des valeurs est utilisé. L'histogramme est alors affiché avec la fonction plot (ici en bleu color='b').
+
+Pour calculer un histogramme sur une partie d'une image, il suffit de définir un mask et de le passer en paramètre à l'appel de la fonction ```cv2.calcHist()```.
+Pour créer un mask vous utiliserez les lignes suivantes :
+```
+# create a mask
+mask = np.zeros(img.shape[:2], np.uint8)
+mask[100:300, 100:400] = 255
+masked_img = cv2.bitwise_and(img,img,mask = mask)
+```
+Pour comparer, afficher l'image complète et son histogramme puis la région de l'image sélectionnée et son histogramme.
+
+## Détection/reconnaissance d'objets
+L'histogramme peut être utilisé pour détecter un objet particulier. Pour cela nous utilisons la fonction ```cv.CompareHIst(hist_requete,hist_candidat,method)``` où method prend l'une des valeurs suivantes cv2.HISTCMP_CORREL (0), cv2.HISTCMP_CHISQR (1), cv2.HISTCMP_INTERSECT(2) ou cv2.HISTCMP_BHATTACHARYYA (3). Tester les lignes de codes suivantes :
+```
+from __future__ import print_function
+from __future__ import division
+import cv2 as cv
+import numpy as np
+
+src_base = cv.imread("main1.jpg")
+src_test1 = cv.imread("main2.jpg")
+src_test2 = cv.imread("main3.jpg")
+
+hsv_base = cv.cvtColor(src_base, cv.COLOR_BGR2HSV)
+hsv_test1 = cv.cvtColor(src_test1, cv.COLOR_BGR2HSV)
+hsv_test2 = cv.cvtColor(src_test2, cv.COLOR_BGR2HSV)
+
+hsv_half_down = hsv_base[hsv_base.shape[0]//2:,:]
+h_bins = 50
+s_bins = 60
+histSize = [h_bins, s_bins]
+
+# Hue varie de 0 à 179, la saturation varie de 0 to 255
+h_ranges = [0, 180]
+s_ranges = [0, 256]
+ranges = h_ranges + s_ranges # concat lists
+
+# Utilise les canaux 0 et 1 pour calculer l'histogramme (H et S)
+channels = [0, 1]
+
+hist_base = cv.calcHist([hsv_base], channels, None, histSize, ranges)
+cv.normalize(hist_base, hist_base, alpha=0, beta=1, norm_type=cv.NORM_MINMAX)
+
+hist_half_down = cv.calcHist([hsv_half_down], channels, None, histSize, ranges)
+cv.normalize(hist_half_down, hist_half_down, alpha=0, beta=1, norm_type=cv.NORM_MINMAX)
+
+hist_test1 = cv.calcHist([hsv_test1], channels, None, histSize, ranges)
+cv.normalize(hist_test1, hist_test1, alpha=0, beta=1, norm_type=cv.NORM_MINMAX)
+
+hist_test2 = cv.calcHist([hsv_test2], channels, None, histSize, ranges)
+cv.normalize(hist_test2, hist_test2, alpha=0, beta=1, norm_type=cv.NORM_MINMAX)
+
+for compare_method in range(4):
+    base_base = cv.compareHist(hist_base, hist_base, compare_method)
+    base_half = cv.compareHist(hist_base, hist_half_down, compare_method)
+    base_test1 = cv.compareHist(hist_base, hist_test1, compare_method)
+    base_test2 = cv.compareHist(hist_base, hist_test2, compare_method)
+    print('Method:', compare_method, 'Perfect, Base-Half, Base-Test(1), Base-Test(2) :',\
+          base_base, '/', base_half, '/', base_test1, '/', base_test2)
+```
+
+```cv.compareHist``` fournit les meilleurs résultats lorsque nous comparons les histogrammes provenant de la même image (heureusement). Ce qui nous permet de vérifier que lorsque la correspondance entre les histogrammes est parfait les métriques HISTCMP_CORREL et HISTCMP_INTERSECT donnent les valeurs max et pour les deux autres métriques la valeur est minimale.
+Cette méthode est pertinente lorsque vous avez déjà un ensemble de régions candidates dans une image pour lesquelles vous souhaitez savoir si elles correspondent à l'objet recherché (hist_requete).
+
+Une autre manière d'opérer la reconnaissance et d'utiliser la fonction ```cv2.matchTemplate``` qui recherche le template candidat (i.e. l'image de l'objet que nous recherchons) en la faisant "glisser" sur toute l'image. Voici quelques lignes de codes à tester cette fois sur une image en niveau de gris :
+
+```
+import cv2
+import numpy as np
+
+# chargement d'une image
+img_rgb = cv2.imread('image.jpg')
+
+# conversio en niveau de gris (un seul canal)
+img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+
+# chargement de l'image template à rechercher
+template = cv2.imread('template.jpg',0)
+w, h = template.shape[::-1]
+
+# seuil de décision qui valide ou non le matching
+res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
+threshold = 0.8
+loc = np.where( res >= threshold)
+
+# affiche tous les matchs validés sur l'image originale
+for pt in zip(*loc[::-1]):
+    cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,255,255), 2)
+    
+cv2.imshow('Detected',img_rgb)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+
+## Détection d'ensemble de pixels connexes
+
+Détecter les éléments connexes dans le mask puis extraire les informations relatives à chaque forme extraite pour leur visualisation :
 ```
 elements=cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
 if len(elements) > 0:
