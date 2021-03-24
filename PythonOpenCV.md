@@ -17,7 +17,7 @@ sudo python3 get-pip.py
 Lorsque pip est installé alors il vous faudra installer les modules suivants :
 
 ```
-sudo pip3 install --proxy=http://10.100.1.4:8080 numpy tensorflow opencv-python==3.4.2.16 opencv-contrib-python==3.4.2.16 sklearn scipy matplotlib psutil
+sudo pip3 install --proxy=http://10.100.1.4:8080 numpy tensorflow opencv-contrib-python==3.4.2.16 sklearn scipy matplotlib psutil
 ```
 Petit rappel - l'utilisation de ces modules dans vos scripts est réalisé par exemple ainsi :
 ```
@@ -30,6 +30,37 @@ from scipy.cluster.vq import *
 from sklearn.preprocessing import StandardScaler
 from sklearn import preprocessing
 ```
+Si tout a été installé convenablement, alors chacune des lignes précédentes devraient n'engendrer aucune erreur.
+
+## Les bases
+
+Créer le script suivant qui charge une image de votre disque et l'affiche sur votre écran via le module cv2.
+Veillez à renseigner le chemin et nom de l'image que vous souhaitez afficher (ici .png).
+```
+import imutils
+import cv2
+
+# charge unne image dans une variabe définie comme un tableau NumPy multi-dimensionnel 
+# donc le shape est nombre rows (height) x nombre columns (width) x nombre channels (depth)
+image = cv2.imread("jp.png")
+(h, w, d) = image.shape
+print("width={}, height={}, depth={}".format(w, h, d))
+
+# afficher l'image sur l'écran. Attention avec cv2.waitKey(0) vous devrez cliquer dans la fenêtre
+# d'affichage et appuyer sur une touche (echap par exemple) pour poursuivre le reste du scirpt
+# (ou fermer le script dans le cas présent)
+cv2.imshow("Image", image)
+cv2.waitKey(0)
+```
+
+A partir du script d'acquisition que M. Boonaert vous a remis et notamment de la fonction ```GrabImageFromCam```
+créer la fonction ```DisplayImage()``` permettant d'afficher dans une fenêtre OpenCV l'image que vous venez d'acquérir.
+Ajouter cette fonction dans un nouveau script que vous nommerez ```ComputerVisionNom1Nom2.py```
+(Nom1 et Nom2 sont les noms des étudiants de votre groupe)
+
+
+
+
 ## Gestion de la souris
 
 Voici quelques lignes de codes pour extraire une région d'intérêt à la souris. Grâce à ces quelques lignes il vous sera possible de calculer la valeur moyenne et la variance de chaque composante de l'image, utile pour procéder ensuite à une étape de segmentation.
