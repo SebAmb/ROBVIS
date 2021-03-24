@@ -1,5 +1,5 @@
 
-# Introduction en traitement et analyse des images pour des applications de robotique (Parite 2)
+# Introduction en traitement et analyse des images pour des applications de robotique (Partie 1)
 
 ## Mise en place de l'environnement
 
