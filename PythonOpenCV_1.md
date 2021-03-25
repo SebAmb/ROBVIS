@@ -7,20 +7,21 @@ Python 3, OpenCV, Linux
 Python librarie: OpenCV, Numpy, Matplot, Sklearn, Scipy
 
 Tous ces outils ne sont pas nécessairement installés sur vos PC. Par conséquent, les actions suivantes sont à réaliser.
-Vous devez être sudo sur vos machines. Si ce n'est pas le cas, il vous faudra créer en environnement virtuel dans lequel vous aurez toute liberté d'installer les librairies Python3 que vous allez utiliser.
+Pour les machines sous Linux, vous devez être sudo sur vos machines. Si ce n'est pas le cas, il vous faudra créer en environnement virtuel dans lequel vous aurez toute liberté d'installer les librairies Python3 que vous allez utiliser. Pour les machines sous Windows, ce problème ne se pose pas nécessairement.
 
 Sous python, l'outil pip permet d'installer les librairies. Cet outil devrait avoir été installé préalablement mais rien n'est moins sûr. Si ce n'est pas le cas, il faudra le faire ainsi (avec les droits sudo ... certains peuvent avoir ces droits et d'autres non) :
 ```
 wget https://bootstrap.pypa.io/get-pip.py
 sudo python3 get-pip.py
 ```
-
 Lorsque pip est installé alors il vous faudra installer les modules suivants :
 
 ```
-sudo pip3 install --proxy=http://10.100.1.4:8080 numpy tensorflow opencv-contrib-python==3.4.2.16 sklearn scipy matplotlib psutil
+sudo pip3 install numpy tensorflow==1.15.2 opencv-contrib-python==3.4.2.4.16 sklearn scipy matplotlib psutil
 ```
-Petit rappel - l'utilisation de ces modules dans vos scripts est réalisé par exemple ainsi :
+
+Petit rappel - l'utilisation de ces modules dans vos scripts doit être précédée par les lignes d'import suivantes :
+
 ```
 import cv2
 import numpy as np
@@ -31,21 +32,23 @@ from scipy.cluster.vq import *
 from sklearn.preprocessing import StandardScaler
 from sklearn import preprocessing
 ```
+
 Si tout a été installé convenablement, alors chacune des lignes précédentes devraient n'engendrer aucune erreur.
+
 
 ## Les bases
 
 ### Lecture/Ecriture/affichage d'images
 
 Créer le script suivant qui charge une image de votre disque et l'affiche sur votre écran via le module cv2.
-Veillez à renseigner le chemin et nom de l'image que vous souhaitez afficher (ici .png).
+Veillez à renseigner le chemin et nom de l'image que vous souhaitez afficher (ici test_img.png).
 ```
 import imutils
 import cv2
 
 # charge unne image dans une variabe définie comme un tableau NumPy multi-dimensionnel 
 # donc le shape est nombre rows (height) x nombre columns (width) x nombre channels (depth)
-image = cv2.imread("jp.png")
+image = cv2.imread("test_img.png")
 (h, w, d) = image.shape
 print("width={}, height={}, depth={}".format(w, h, d))
 
@@ -62,7 +65,7 @@ Ajouter cette fonction dans un nouveau script que vous nommerez ```ComputerVisio
 (Nom1 et Nom2 sont les noms des étudiants de votre groupe)
 Ce script pourra contenir toutes les fonctions que vous aurez développées pour le projet de cette UV.
 
-### Tratement et analyse couleur
+### Traitement et analyse couleur
 
 Nous allons désormais faire quelques manipulations du contenu colorimétrique des images que vous aurez à traiter.
 Vous savez qu'une image couleur est de base codée en trois canaux RGB et qu'il est possible de la représenter 
@@ -77,13 +80,22 @@ blues = image[:, :, 0]
 greens = image[:, :, 1]
 reds = image[:, :, 2]
 ```
-Les lignes de codes suivantes vous permettent de seuiller les composantes selons certaines valeur afin de mettre en évidence
-que les parties de l'image qui vous intéressent. Dans cet exemple l'image est convertie en HSV. Dans un premier temps, sont définies
-les valeurs min et max pour le vert, le rouge et le bleu selon la représentation HSV : c'est pour cela que seule la première valeur
-varie...50/60 pour le vert, 170/180 pour le rouge et 110/120 pour le bleu. Puis trois masques sont produits à partir de ces 3 intervalles :
-un masque est une image contenant des valeurs 1 ou 0 : un pixel prend la valeur 1 lorsque les valeurs HSV du pixels correspondant
-est dans l'un des intervalles définis précédemment. Ces trois masques sont finalement utilisés pour effacer les parties de l'image RGB
-qui ne respectent pas les contraintes colorimétriques imposées.
+Dans le cas d'une image HSV, les canaux 0,1 et 2 représentent respectivement les composantes H, S et V de l'image après une conversion.
+
+Pour assurere une telle conversion, vous utiliserez la fonction ```cv2.cvtColor(image, option)``` dans laquelle option peut prendre par exemple l'un
+des paramètres suivants :
+
+* cv2.COLOR_BGR2HSV pour une conversion BGR vers HSV
+* cv2.COLOR_BGR2GRAY pour une conversion BGR vers niveau de gris
+* cv2.COLOR_BGR2YCrCb pour une conversion BGR vers YCrCb
+* cv2.COLOR_BGR2HLS pour une conversion BGR vers HLS
+* cv2.COLOR_BGR2HLS pour une conversion BGR vers Lab
+
+Les lignes de codes suivantes vous permettent de seuiller les composantes selons certaines valeurs afin de mettre en évidence
+que les parties de l'image qui vous intéressent. Dans cet exemple l'image est convertie en HSV afin d'opérer un seuillage sur la teinte (H).
+Dans un premier temps, sont définies les valeurs min et max pour le vert, le rouge et le bleu selon la représentation HSV : c'est
+pour cela que seule la première valeur varie...50/60 pour le vert, 170/180 pour le rouge et 110/120 pour le bleu.
+Puis trois masques sont produits à partir de ces 3 intervalles. Un masque est une image contenant des valeurs 1 ou 0 : un pixel prend la valeur 1 lorsque les valeurs HSV du pixels correspondant est dans l'un des intervalles définis précédemment. Ces trois masques sont finalement utilisés pour effacer les parties de l'image RGB qui ne respectent pas les contraintes colorimétriques imposées.
 
 ```
 import cv2
@@ -125,6 +137,101 @@ res_r = cv2.bitwise_and(image,image, mask= mask_r)
 
 # affichage de l'image après sélection de la partie "verte" de l'image
 cv2.imshow('Green',res_g)
+```
+
+### Binarisation d'une image en niveau de gris
+
+Si nous venons de voir comment mettre en évidence certaines régions d'une image à partir du seuillage colorimétrique de certaines composantes, il est également possible de faire de même sur une image en niveau de gris. Pour cela nous utilisons la fonction ```cv2.threshold()``` de la manière suivante :
+```
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+img_c = cv.imread('shape-noise.png')
+img = cv.cvtColor(image_c, cv2.COLOR_BGR2GRAY)
+
+ret,thresh1 = cv.threshold(img,127,255,cv.THRESH_BINARY)
+ret,thresh2 = cv.threshold(img,127,255,cv.THRESH_BINARY_INV)
+ret,thresh3 = cv.threshold(img,127,255,cv.THRESH_TRUNC)
+ret,thresh4 = cv.threshold(img,127,255,cv.THRESH_TOZERO)
+ret,thresh5 = cv.threshold(img,127,255,cv.THRESH_TOZERO_INV)
+
+titles = ['Original Image','BINARY','BINARY_INV','TRUNC','TOZERO','TOZERO_INV']
+images = [img, thresh1, thresh2, thresh3, thresh4, thresh5]
+for i in range(6):
+    plt.subplot(2,3,i+1),plt.imshow(images[i],'gray',vmin=0,vmax=255)
+    plt.title(titles[i])
+    plt.xticks([]),plt.yticks([])
+plt.show()
+```
+Des seuillages plus complexes sont possibles offrant généralement de meilleurs résultats dans des contextes où le bruit est plus important (et c'est souivent le cas malheureusement). Deux exemples : le premier un filtrage adaptatif gausssien et un filtrage d'Otsu. 
+
+```
+# Binarisation par filtrage adaptatif gaussien
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+img_c = cv.imread('shape-noise.png')
+img = cv.cvtColor(image_c, cv2.COLOR_BGR2GRAY)
+
+img = cv.medianBlur(img,5)
+
+ret,th1 = cv.threshold(img,127,255,cv.THRESH_BINARY)
+
+th2 = cv.adaptiveThreshold(img,255,cv.ADAPTIVE_THRESH_MEAN_C,\
+            cv.THRESH_BINARY,11,2)
+	    
+th3 = cv.adaptiveThreshold(img,255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,\
+            cv.THRESH_BINARY,11,2)
+	    
+titles = ['Original Image', 'Global Thresholding (v = 127)',
+            'Adaptive Mean Thresholding', 'Adaptive Gaussian Thresholding']
+images = [img, th1, th2, th3]
+for i in range(4):
+    plt.subplot(2,2,i+1),plt.imshow(images[i],'gray')
+    plt.title(titles[i])
+    plt.xticks([]),plt.yticks([])
+plt.show()
+
+```
+
+et
+
+```
+# Binarisation par méthode d'Otsu
+import cv2 as cv
+import numpy as np
+from matplotlib import pyplot as plt
+
+img_c = cv.imread('shape-noise.png')
+img = cv.cvtColor(image_c, cv2.COLOR_BGR2GRAY)
+
+# global thresholding
+ret1,th1 = cv.threshold(img,127,255,cv.THRESH_BINARY)
+
+# Otsu's thresholding
+ret2,th2 = cv.threshold(img,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
+
+# Otsu's thresholding after Gaussian filtering
+blur = cv.GaussianBlur(img,(5,5),0)
+ret3,th3 = cv.threshold(blur,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
+
+# plot all the images and their histograms
+images = [img, 0, th1,
+          img, 0, th2,
+          blur, 0, th3]
+titles = ['Original Noisy Image','Histogram','Global Thresholding (v=127)',
+          'Original Noisy Image','Histogram',"Otsu's Thresholding",
+          'Gaussian filtered Image','Histogram',"Otsu's Thresholding"]
+for i in range(3):
+    plt.subplot(3,3,i*3+1),plt.imshow(images[i*3],'gray')
+    plt.title(titles[i*3]), plt.xticks([]), plt.yticks([])
+    plt.subplot(3,3,i*3+2),plt.hist(images[i*3].ravel(),256)
+    plt.title(titles[i*3+1]), plt.xticks([]), plt.yticks([])
+    plt.subplot(3,3,i*3+3),plt.imshow(images[i*3+2],'gray')
+    plt.title(titles[i*3+2]), plt.xticks([]), plt.yticks([])
+plt.show()
 ```
 
 ### Gestion de la souris et crop d'une image
@@ -221,12 +328,55 @@ cap.release()
 cv2.destroyAllWindows()
 ```
 
-Après avoir produite le mask avec ```mask=cv2.inRange(image, lo, hi)``` il est parfois pertinant de débruiter l'image résultats en lissant ou par quelques opérations morphologiques (ouverture, fermeture, erosion, dilatation).
+Après avoir produite le mask avec ```mask=cv2.inRange(image, lo, hi)``` il est parfois pertinant de débruiter l'image en appliquant un opérteur de lissage par exemple ou en appliquant quelques opérations morphologiques (ouverture, fermeture, erosion, dilatation) sur le mask obtenu.
 ```
 image=cv2.blur(image, (7, 7))
 image = cv2.GaussianBlur(image, (11, 11), 0)
-mask=cv2.erode(mask, None, iterations=4)
-mask=cv2.dilate(mask, None, iterations=4)
+mask=cv2.erode(mask, kernel, iterations=4)
+mask=cv2.dilate(mask, kernel, iterations=4)
+mask=cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+mask=cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+```
+
+Les opérateurs morphologiques nécessitent la définition d'un noyau (kernel), c'est à dire un voisinage sur lequel l'opérateur sera appliqué.
+Lorsque kernel est fixé à None, l'opérateur utilise un kernel par défaut. Voici quelques lignes à tester sur l'image world.png. Jouer avec la taille
+du kernel ou la variable iterations (le nombre de fois que l'érosion ou la dilatation est appliquée).
+
+
+```
+import cv2
+import numpy as np
+
+img = cv2.imread('/home/user/catkin_ws/src/opencv_for_robotics_images/Unit_2/Course_images/world.png',0)
+img = cv2.resize(img,(450,450))
+
+# Défintion du kernel de l'érosion taille 5x5
+kernel = np.ones((5,5),np.uint8)
+
+erosion = cv2.erode(img,kernel,iterations = 1)
+
+# Défintion du kernel de la dilation taille 3x3
+kernel = np.ones((3,3),np.uint8)
+
+dilation = cv2.dilate(img,kernel,iterations = 1)
+
+# Défintion du kernel de l'ouverture taille 7x7
+kernel = np.ones((7,7),np.uint8)
+
+opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+
+# Défintion du kernel de la fermeture taille 7x7
+kernel = np.ones((7,7),np.uint8)
+
+closing = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+
+cv2.imshow('Original',img)
+cv2.imshow('Erosion',erosion)
+cv2.imshow('Dilatation',dilatation)
+cv2.imshow('Closing',closing)
+cv2.imshow('Opening',opening)
+cv2.waitKey(0)
+
 ```
 
 Ajouter une ou une ombinaison de ces 3 lignes dans le script précédent afin de voir leur effet. Vous pourrez jouer sur les différents paramètres afin de mesurer son effet sur le résultat.
@@ -255,8 +405,10 @@ masked_img = cv2.bitwise_and(img,img,mask = mask)
 Pour comparer, afficher l'image complète et son histogramme puis la région de l'image sélectionnée et son histogramme.
 
 ## Reconnaissance d'objets
+
 ### Par l'histogramme
-L'histogramme peut être utilisé pour détecter un objet particulier. Pour cela nous utilisons la fonction ```cv.CompareHIst(hist_requete,hist_candidat,method)``` où method prend l'une des valeurs suivantes cv2.HISTCMP_CORREL (0), cv2.HISTCMP_CHISQR (1), cv2.HISTCMP_INTERSECT(2) ou cv2.HISTCMP_BHATTACHARYYA (3). Tester les lignes de codes suivantes :
+
+L'histogramme peut être utilisé pour détecter un objet particulier. L'idée est de retrouver l'objet d'intérêt en faisant l'hypothèse que dans l'image, cet objet aura un histrogramme assez proche. Evidemment l'histrogramme peut être différent car, par exemple, l'objet peut être vu d'un autre point de vue, ou il peut être plus petit. Donc l'hypothèse sera d'étudier la similarité entre l'histogramme de l'objet requête et l'histrogramme d'une région de l'image dans laquelle l'objet pourrait être présent. Pour cela nous utilisons la fonction ```cv.CompareHIst(hist_requete,hist_candidat,method)``` où method prend l'une des valeurs suivantes cv2.HISTCMP_CORREL (0), cv2.HISTCMP_CHISQR (1), cv2.HISTCMP_INTERSECT(2) ou cv2.HISTCMP_BHATTACHARYYA (3). Tester les lignes de codes suivantes :
 ```
 from __future__ import print_function
 from __future__ import division
@@ -307,7 +459,7 @@ for compare_method in range(4):
           base_base, '/', base_half, '/', base_test1, '/', base_test2)
 ```
 
-```cv.compareHist``` fournit les meilleurs résultats lorsque nous comparons les histogrammes provenant de la même image (heureusement). Ce qui nous permet de vérifier que lorsque la correspondance entre les histogrammes est parfaite les métriques HISTCMP_CORREL et HISTCMP_INTERSECT donnent les valeurs max et pour les deux autres métriques la valeur est minimale.
+```cv.compareHist``` fournit les meilleurs résultats lorsque nous comparons les histogrammes provenant de la même image (heureusement). Ce qui nous permet de vérifier que lorsque la correspondance entre les histogrammes est parfaite les métriques HISTCMP_CORREL et HISTCMP_INTERSECT donnent les valeurs max et pour les deux autres métriques la valeur est minimale. Pourdécider si oui ou non la région de l'image testée comporte l'objet requête, il faut alors comparer la valeur fournie par l'opérateur à un seuil. Ce seuil est à fixer de manière judicieuse afin de limiter le nombre de fausses détections ou de nons détections.
 Cette méthode est pertinente lorsque vous avez déjà un ensemble de régions candidates dans une image pour lesquelles vous souhaitez savoir si elles correspondent à l'objet recherché (hist_requete).
 
 ### Par template matching 
@@ -340,6 +492,7 @@ cv2.imshow('Detected',img_rgb)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 ```
+
 ### Synthèse
 
 Ecrire un script capable de retrouver dans le flux de votre webcam une région de l'image que vous aurez préalablement sélectionnée à l'aide de votre souris.
