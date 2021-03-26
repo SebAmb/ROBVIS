@@ -204,7 +204,7 @@ import cv2 as cv
 import numpy as np
 from matplotlib import pyplot as plt
 
-img_c = cv.imread('shape-noise.png')
+img_c = cv.imread('shape_noise.png')
 img = cv.cvtColor(image_c, cv2.COLOR_BGR2GRAY)
 
 # global thresholding
