@@ -3,7 +3,7 @@
 ## Détection d'ensemble de pixels connexes
 
 Dans le TP précédent, vous avez appris à sélectionner certaines parties d'une image à partir de l'analyse de ses composantes colorimétriques ou plus simplement de ses niveaux de gris (```fonction cv2.inRange()``` et  ```cv2.threshold()```.
-Ces deux fonctions produisent des masques dans lesquels les pixels à 255 respectent la contraintes imposées. Il est alors possible de détecter les éléments connexes dans le mask et d'en extraire certaines informations de forme ou de position (```cv2.findcontours()```). En considérant que vous avez préalablement  extrait un **mask** d'une image que vous avez chargée dans la variable **im**, voici les lignes de code qui vous permettent d'extraire tous les éléments connexes, de classer les différents ensembles de pixels connexes par ordre croissant de leur surface (fonction ```sorted()``` avec paramètre ***key=cv.contourArea***), d'extraire le cercle minimum qui contient le 1600ème ensemble de pixels connexes pour finalement l'afficher dans la copy de l'image initiale (2 est ici la taille du trait avec lequel le cercle est dessiné dans l'image).
+Ces deux fonctions produisent des masques dans lesquels les pixels à 255 respectent la ou les contraintes imposées. Il est alors possible de détecter les éléments connexes dans le mask et d'en extraire certaines informations de forme ou de position (```cv2.findcontours()```). En considérant que vous avez préalablement  extrait un **mask** d'une image que vous avez chargée dans la variable **im**, voici les lignes de code qui vous permettent d'extraire tous les éléments connexes, de classer les différents ensembles de pixels connexes par ordre croissant de leur surface (fonction ```sorted()``` avec paramètre ***key=cv.contourArea***), d'extraire le cercle minimum qui contient le 1600ème ensemble de pixels connexes pour finalement l'afficher dans la copy de l'image initiale (2 est ici la taille du trait avec lequel le cercle est dessiné dans l'image).
 
 ```
 image=im.copy()
@@ -14,11 +14,13 @@ if len(elements) > 0:
     cv2.circle(image, (int(x), int(y)), int(rayon), [0,0,255], 2)
     cv2.putText(image, "Objet !!!", (int(x)+10, int(y) -10), cv.FONT_HERSHEY_DUPLEX, 1, [0,255,0], 1, cv.LINE_AA)
 ```
-Tester ces quelques sur l'image ***imageasegmenter.jpg***
+* Tester ces quelques sur l'image ***imageasegmenter.jpg***
 
-Il vous est possible d'afficher tout ou partie des ensembles de pixels connexe en utilisant la fonction ```cv.drawContours()```. Par exemple pour tous les  afficher en couleur vert dans la variable ***image*** il suffit d'utiliser ```cv.drawContours(image, contours, -1, (0,255,0), 3)```. Si vous souhaitez afficher le 1600ème ensemble de pixels connexes (en rouge)~: 
+* Comparer ce résultat avec celui obtenu après avoir appliquer des opérations morphologiques. Par exemple, pour supprimer les petits ensembles vous pouvez appliquer des ouvertures ou une succession de plusieurs érosions et autant de dilatations (pour récupérer la taille initiale des régions que vous souhaitez garder).
+
+Il vous est possible d'afficher tout ou partie des ensembles de pixels connexes en utilisant la fonction ```cv.drawContours()```. Par exemple pour les  afficher en couleur vert dans la variable ***image*** il suffit d'utiliser ```cv.drawContours(image, elements, -1, (0,255,0), 3)```. Si vous souhaitez afficher le 1600ème ensemble de pixels connexes (en rouge)~: 
 ```
-cnt = contours[1600]
+cnt = elements[1600]
 cv.drawContours(img, [cnt], 0, (0,0,255), 3)
 ```
 
@@ -48,11 +50,11 @@ min_val, max_val, min_loc, max_loc = cv.minMaxLoc(image,mask = mask)
 ```
 mean_val = cv.mean(im,mask = mask)
 ```
-Tous ces paramètres sont utilies pour caractériser la forme représentée par un ensemble de pixels connexes.  Un ensemble de ces paramètres peut  être  calculé et être regroupé dans un vecteur qui caractérisera la forme en question. Ainsi toute forme "segmentée" pour être résumée par un vecteur dans l'espace de ces caractéristiques.  L'idée sous-jacente est de trouver des sous-régions de cet espace qui regrouperaient les ensemble de pixels connexes dont la géométrie serait similaire (donc appartenant à une même classe)
+Tous ces paramètres sont utilies pour caractériser la forme représentée par un ensemble de pixels connexes. Un ensemble de ces paramètres peut être calculé et être regroupé dans un vecteur qui caractérisera la forme en question. Ainsi toute forme "segmentée" peut être résumée par un vecteur dans l'espace de ces caractéristiques.  L'idée sous-jacente est de trouver des sous-régions de cet espace qui regrouperaient les ensembles de pixels connexes dont la géométrie serait similaire (donc appartenant hypothétiquement à une même classe)
 
 D'autres caractéristiques existent. MATLAB en proposent d'autres que vous pourriez implanter et utiliser à l'avenir : http://www.mathworks.in/help/images/ref/regionprops.html
 
-Le module skimage propose un ensemble de fonctions équivalentes pour extraire ces caractéristiques de forme. Voici quelques lignes en python pour extraire des région de pixels connexes dans une image binarisée ``` label()``` et de ces régions extraire quelques propriétés ``` regionprops()```. Dans cet exemple, nous utilisons l'orientation et le centroid. Cette fonction offrent de nombreuses autres caractéristiques que vous pouvez extraires pour augmenter la dimension du vecteur de forme et ainsi obtenir un meilleur espace de représentation et de classification des formes en présence (https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops).
+Le module skimage propose un ensemble plus grand de fonctions équivalentes pour extraire ces caractéristiques de forme. Voici quelques lignes en python pour extraire des région de pixels connexes dans une image binarisée ``` label()``` et de ces régions extraire quelques propriétés ``` regionprops()```. Dans cet exemple, nous utilisons l'orientation et le centroid. Cette fonction offrent de nombreuses autres caractéristiques que vous pouvez extraires pour augmenter la dimension du vecteur de forme et ainsi obtenir un meilleur espace de représentation et de classification des formes en présence (https://scikit-image.org/docs/dev/api/skimage.measure.html#skimage.measure.regionprops).
 
 ```
 import cv2 
@@ -96,11 +98,11 @@ cv2.waitKey(0)
 ```
 ## Reconnaissance d'objets par feature matching
 
-L'appariement de caractéristiques est un groupe d'algorithmes qui jouent un rôle important dans certaines applications de vision par ordinateur. L'idée principale est d'extraire des caractéristiques particulières d'une image d'entraînement (qui contient un objet spécifique) et d'extraire ces mêmes caractéristique d'une autre images comportant ou non cet objet afin de le retrouver et de le localiser. Si des similitudes existent entre la distribution spatiale des ces caractéristiques alors il est probable que l'objet se trouve dans l'image testée.
+L'appariement de caractéristiques est un groupe d'algorithmes qui jouent un rôle important dans certaines applications de vision par ordinateur. L'idée principale est d'extraire des caractéristiques particulières d'une image d'entraînement (qui contient un objet spécifique) et d'extraire ces mêmes caractéristique d'une autre images comportant ou non cet objet afin de le retrouver et de le localiser le cas échéant. Si des similitudes existent entre la distribution spatiale de ces caractéristiques alors il est probable que l'objet se trouve dans l'image testée.
 
 Cet ensemble de caratéristiques doit être un attribut le plus distinctif de l'objet considéré. Si vous souhaitez détecter plusieurs objets alors chacun d'entre eux doit être caractérisé par un attribut unique.
 
-Ces caractéristiques peuvent être locales i.e. représentatives d'une distribution de couleur ou de niveau de gris autour d'un pixel particulier (un coin, un contour) : un point d'intéret. Ces points d'intérêt sont ensuite décrits par un vecteur (descripteur) dont les composantes sont calculées à partir  du voisinage autour du point d'intéret. Le descripteur doit être invariant à certains changement que peut subir l'image de l'objet à retrouver : changement d'échelle, rotation, changement de luminosité. Ainsi, ces points d'inérêt et les descripteurs correspondants sont extraits de l'image modèle et de l'image test pour être finalement comparés afin de trouver des similarités.
+Ces caractéristiques peuvent être locales i.e. représentatives d'une distribution de couleur ou de niveau de gris autour d'un pixel particulier (un coin, un contour) c'est ce qu'on appelle un point d'intéret. Ces points d'intérêt sont ensuite décrits par un vecteur (le descripteur) dont les composantes sont calculées à partir du voisinage autour du point d'intéret. Le descripteur doit être invariant à certains changements que peut subir l'image de l'objet à retrouver : changement d'échelle, rotation, changement de luminosité. Ainsi, ces points d'inérêt et les descripteurs correspondants sont extraits de l'image modèle et de l'image test pour être finalement comparés afin de trouver des similarités.
 
 ** FAST** (Features from Accelerated Segment Test) est un premier algorithme de détection de point d'intérêt de typ coin. C'est un algrithme rapide. Voici comment faire appel à cet algrithme implanté sous OpenCV. Dans cet exemple, les points d'intérêt sont extrait avec l'étape de non-maximal suppression qui permet de supprimer les redondances trop nombreuses d'un même point d'intérêt.
 
@@ -140,7 +142,7 @@ Keypoints_2 = fast.detect(gray, None)
 
 ```
 
-Alors que nous avons détecté un ensemble de coins FAST, il faut désormais extraire un descripteur en chacun d'eux. **BRIEF** (Binary Robust Independent Elementary Features)  est un descripteur qui converti la valeur des pixels d'un voisinage (ou patch) en un vecteur binaire (binary feature descriptor). Dans l'article scientifique de référence, les auteurs utilisent un vecteur de 128 à 512 bits.
+Alors que nous avons détecté un ensemble de coins FAST, il faut désormais extraire un descripteur en chacun d'eux. **BRIEF** (Binary Robust Independent Elementary Features) est un descripteur qui converti la valeur des pixels d'un voisinage (ou patch) en un vecteur binaire (binary feature descriptor). Dans l'article scientifique de référence, les auteurs utilisent un vecteur de 128 à 512 bits.
 Le script suivant utilise les lignes de codes précédentes (avec non max suppression) et y ajoute l'extraction du descripteur : 
 ```
 import cv2
