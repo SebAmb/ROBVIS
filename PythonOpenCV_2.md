@@ -14,9 +14,9 @@ if len(elements) > 0:
     cv2.circle(image, (int(x), int(y)), int(rayon), [0,0,255], 2)
     cv2.putText(image, "Objet !!!", (int(x)+10, int(y) -10), cv.FONT_HERSHEY_DUPLEX, 1, [0,255,0], 1, cv.LINE_AA)
 ```
-* Tester ces quelques sur l'image ***imageasegmenter.jpg***
+Tester ces quelques sur l'image ***imageasegmenter.jpg***
 
-* Comparer ce résultat avec celui obtenu après avoir appliquer des opérations morphologiques. Par exemple, pour supprimer les petits ensembles vous pouvez appliquer des ouvertures ou une succession de plusieurs érosions et autant de dilatations (pour récupérer la taille initiale des régions que vous souhaitez garder).
+Comparer ce résultat avec celui obtenu après avoir appliquer des opérations morphologiques. Par exemple, pour supprimer les petits ensembles vous pouvez appliquer des ouvertures ou une succession de plusieurs érosions et autant de dilatations (pour récupérer la taille initiale des régions que vous souhaitez garder).
 
 Il vous est possible d'afficher tout ou partie des ensembles de pixels connexes en utilisant la fonction ```cv.drawContours()```. Par exemple pour les  afficher en couleur vert dans la variable ***image*** il suffit d'utiliser ```cv.drawContours(image, elements, -1, (0,255,0), 3)```. Si vous souhaitez afficher le 1600ème ensemble de pixels connexes (en rouge)~: 
 ```
@@ -281,7 +281,7 @@ cv2.destroyAllWindows()
 ```
 
 Appliquer le même script sur les images sign_stop.png (train) et (roadsign.png). Attendion, il faudra peut être changer le nombre de keypoints matchés (100 dans l'exemple précédent) afin d'être le plus précis dans la détection.
-.  
+  
 Modifier ce script en appliquant la reconnaissance sur les images provenant de la caméra de votre PC et à partir d'un objet "model" (un mug avec image par exemple) que vous aurez préalablement choisi, présenté devant la caméra et modélisé par l'algorithme ORB.
 L'idée est de dessiner une boite englobante autour de ce même objet lorsqu'il est détecté dans le flux de la caméra.
 
@@ -303,7 +303,8 @@ for i in range (1, 5):
     cv2.waitKey(0)
     cv2.destroyAllWindows
 ```
-Une fois générés certains codes, il est possible de détecter et localiser les QRcode
+Une fois que vous avez générés certains codes, il est possible d'en détecter et localiser certains autres.
+
 ```
 import cv2 
 import numpy as np 
