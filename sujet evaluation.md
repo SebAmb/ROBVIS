@@ -12,4 +12,7 @@ Pour y parvenir, je vous propose de suivre les étapes suivantes.
 
 ## Etape 1
 
-Afin de détecter les objets présents dans une l'image *t*, un moyen est simplement de faire la différence d'une image 
+Afin de détecter les objets présents dans une l'image *t*, un moyen simplem est de faire la différence de cette image *t*
+avec une image du "fond" vide i.e. acquise sans objet présent. Dans le cadre de ce carrefour, l'image de fond (***BG.png***)
+est l'image du carrefour sans aucun mobile le traversant. Pour faire une différence entre deux images vous utilserez la fonction 
+```cv2.
