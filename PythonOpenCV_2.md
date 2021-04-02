@@ -196,7 +196,7 @@ keypoints, descriptor = orb.detectAndCompute(gray, None)
 cv2.drawKeypoints(image, keypoints, previ
 
 image = cv2.imread('sew, flags = cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-cv2.drawKeypoints(image, keypoints, dots, flags=cv2.NOT_DRAW_SINGLE_POINTS)
+cv2.drawKeypoints(image, keypoints, dots, flags=2)
 
 cv2.imshow('Points',preview)
 cv2.imshow('Matches',dots)
