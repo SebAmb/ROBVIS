@@ -1,7 +1,5 @@
 # Sujet Evaluation Python/OpenCV UV RobVis 2020-2021
 
-# Sujet Evaluation Python/OpenCV UV RobVis 2020-2021
-
 Ce mini-sujet d'une heure comporte deux volets. Dans le premier (Etape 1 à 3), il s'agit de développer le script python capable de détecter les **objets présents**  (voiture, vélo, piéton etc.) dans une séquence d'images prise à partir la caméra de surveillance d'un carrefour. Il ne s'agira pas d'identifier la classe des objets mais simplement de les localiser dans chaque image de la séquence. Dans le second volet (Etape 4 à 5), je vous demande d'écrire le script capable de retrouver deux véhicules particuliers dans une séquence.
 
 Pour cela, vous vous appuierez très majoritairement sur les codes que vous avez testés durant les séances de TP précédentes et tout particulièrement ce qui vous a été montré en matière de segmentation et de détection d'objets.
