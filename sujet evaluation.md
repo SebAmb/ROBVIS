@@ -23,7 +23,7 @@ Dans cette première étape je vous demande donc de produire le script python qu
 
 
 
-## VolVoici les étapes.et 1 - étape 2
+## Volet 1 - étape 2
 
 Dans l'étape 1, vous avez réalisé la détection des objets présents dans la scène. Dans cette deuxième étape, je vous demande :
 - de procéder (par binarisation) à la création du masque de chaque objet ;
