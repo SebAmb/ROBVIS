@@ -7,10 +7,14 @@ Ces deux fonctions produisent des masques dans lesquels les pixels à 255 respec
 
 ```
 image=im.copy()
+
 # vérifier la version d'OpenCV que vous avez installée
 # print(cv2.__version__)
-image2,elements,hierarchy=cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) # pour va version 3.x d'OpenCV
-#elements,hierarchy=cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) # pour va version 3.x d'Opencv # pour la version 4.x d'OpenCV
+
+# pour une version 3.x d'OpenCV
+image2,elements,hierarchy=cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+# pour une version 3.x d'Opencv # pour la version 4.x d'OpenCV
+#elements,hierarchy=cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 if len(elements) > 0:
     c=sorted(elements, key=cv2.contourArea)
     ((x, y), rayon)=cv2.minEnclosingCircle(c[1600])
