@@ -347,7 +347,7 @@ du kernel ou la variable iterations (le nombre de fois que l'érosion ou la dila
 import cv2
 import numpy as np
 
-img = cv2.imread('/home/user/catkin_ws/src/opencv_for_robotics_images/Unit_2/Course_images/world.png',0)
+img = cv2.imread('world.png',0)
 img = cv2.resize(img,(450,450))
 
 # Défintion du kernel de l'érosion taille 5x5
