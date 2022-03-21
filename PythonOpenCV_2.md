@@ -202,9 +202,7 @@ dots = np.copy(image_1)
 keypoints, descriptor = orb.detectAndCompute(gray, None)
 
 # Dessine les keypoints
-cv2.drawKeypoints(image, keypoints, previ
-
-image = cv2.imread('sew, flags = cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+cv2.drawKeypoints(image, keypoints, preview, flags = cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 cv2.drawKeypoints(image, keypoints, dots, flags=2)
 
 cv2.imshow('Points',preview)
