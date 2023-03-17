@@ -2,6 +2,11 @@
 # Introduction en traitement et analyse des images pour des applications de robotique (Partie 1)
 
 Attention cette année ce TP pourra se faire sur [colab](https://colab.research.google.com/).
+Pour l'affichage avec cv2 utiliser la fonction ```cv2_imshow(image```:
+Pour y avoir accès : ajouter la ligne :
+```
+from google.colab.patches import cv2_imshow
+```
 
 ## Mise en place de l'environnement
 
