@@ -1,6 +1,8 @@
 
 # Introduction en traitement et analyse des images pour des applications de robotique (Partie 1)
 
+Attention cette année ce TP pourra se faire sur [colab](https://colab.research.google.com/).
+
 ## Mise en place de l'environnement
 
 Python 3, OpenCV, Linux
