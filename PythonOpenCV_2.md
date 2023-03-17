@@ -1,5 +1,7 @@
 # Introduction en traitement et analyse des images pour des applications de robotique (Partie 2)
 
+Attention cette année ce TP pourrait se faire sur [colab](https://colab.research.google.com/).
+
 ## Détection d'ensemble de pixels connexes
 
 Dans le TP précédent, vous avez appris à sélectionner certaines parties d'une image à partir de l'analyse de ses composantes colorimétriques ou plus simplement de ses niveaux de gris (```fonction cv2.inRange()``` et  ```cv2.threshold()```.
