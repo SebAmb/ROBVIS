@@ -1,5 +1,7 @@
 # Introduction en traitement et analyse des images pour des applications de robotique (Partie 3)
 
+Attention cette année ce TP pourrait se faire sur [colab](https://colab.research.google.com/).
+
 ## Segmentation des images par la méthodes des k-moyennes (kmeans)
 
 Kmeans est un algorithme de clustering, dont l'objectif est de partitionner n points de données en k grappes. Chacun des n points de données sera assigné à un cluster avec la moyenne la plus proche. La moyenne de chaque groupe s'appelle «centroïde» ou «centre». Globalement, l'application de k-means donne k grappes distinctes des n points de données d'origine. Les points de données à l'intérieur d'un cluster particulier sont considérés comme «plus similaires» les uns aux autres que les points de données appartenant à d'autres groupes. Cet algorithme peut être appliquer sur des points d’origine géométrique, colorimétriques et autres. 
