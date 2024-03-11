@@ -1,12 +1,4 @@
-
-# Introduction en traitement et analyse des images pour des applications de robotique (Partie 1)
-
-Attention cette année ce TP pourra se faire sur [colab](https://colab.research.google.com/).
-Pour l'affichage avec cv2 utiliser la fonction ```cv2_imshow(image```:
-Pour y avoir accès : ajouter la ligne :
-```
-from google.colab.patches import cv2_imshow
-```
+# Introduction en traitement et analyse des images pour des applications de robotique
 
 ## Mise en place de l'environnement
 
@@ -24,24 +16,17 @@ sudo python3 get-pip.py
 Lorsque pip est installé alors il vous faudra installer les modules suivants :
 
 ```
-sudo pip3 install numpy tensorflow==1.15.2 opencv-contrib-python==3.4.2.4.16 sklearn scipy matplotlib psutil
+sudo pip3 install numpy opencv-contrib-python==3.4.2.4.16 sklearn scipy matplotlib psutil
 ```
 
-Petit rappel - l'utilisation de ces modules dans vos scripts doit être précédée par les lignes d'import suivantes :
+Petit rappel - l'utilisation de ces modules dans vos scripts doit être précédée par les lignes d'import nécessaires à l'usage des
+fonctions auxquelles vous souhaitez faire appel. Par exemple :
 
 ```
 import cv2
 import numpy as np
 import os
-from sklearn.svm import LinearSVC
-from sklearn.externals import joblib
-from scipy.cluster.vq import *
-from sklearn.preprocessing import StandardScaler
-from sklearn import preprocessing
 ```
-
-Si tout a été installé convenablement, alors chacune des lignes précédentes devraient n'engendrer aucune erreur.
-
 
 ## Les bases
 
