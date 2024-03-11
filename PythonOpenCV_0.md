@@ -1,4 +1,4 @@
-# Introduction en traitement et analyse des images pour des applications de robotique
+# Introduction en traitement et analyse des images pour des applications de robotique - Les bases
 
 ## Mise en place de l'environnement
 
@@ -27,10 +27,7 @@ import cv2
 import numpy as np
 import os
 ```
-
-## Les bases
-
-### Lecture/Ecriture/affichage d'images
+## Lecture/Ecriture/affichage d'images
 
 Créer le script suivant qui charge une image de votre disque et l'affiche sur votre écran via le module cv2.
 Veillez à renseigner le chemin et nom de l'image que vous souhaitez afficher (ici test_img.png).
@@ -57,7 +54,7 @@ Ajouter cette fonction dans un nouveau script que vous nommerez ```ComputerVisio
 (Nom1 et Nom2 sont les noms des étudiants de votre groupe)
 Ce script pourra contenir toutes les fonctions que vous aurez développées pour le projet de cette UV.
 
-### Traitement et analyse couleur
+## Traitement et analyse couleur
 
 Nous allons désormais faire quelques manipulations du contenu colorimétrique des images que vous aurez à traiter.
 Vous savez qu'une image couleur est de base codée en trois canaux RGB et qu'il est possible de la représenter 
@@ -131,7 +128,7 @@ res_r = cv2.bitwise_and(image,image, mask= mask_r)
 cv2.imshow('Green',res_g)
 ```
 
-### Binarisation d'une image en niveau de gris
+## Binarisation d'une image en niveau de gris
 
 Si nous venons de voir comment mettre en évidence certaines régions d'une image à partir du seuillage colorimétrique de certaines composantes, il est également possible de faire de même sur une image en niveau de gris. Pour cela nous utilisons la fonction ```cv2.threshold()``` de la manière suivante :
 ```
@@ -226,7 +223,7 @@ for i in range(3):
 plt.show()
 ```
 
-### Gestion de la souris et crop d'une image
+## Gestion de la souris et crop d'une image
 
 Voici quelques lignes de codes pour extraire une région d'intérêt à la souris. Grâce à ces quelques lignes il vous sera possible de n'appliquer les lignes précédentes que sur une région de l'image. Mieux encore, cela vous permettra de calculer la valeur moyenne et la variance des composantes d'une partie de l'image, afin de "filtrer" les régions qui lui ressemblent (du point de vue colorimétrique). Dans cet exemple, l'image n'est pas chargée de votre disque dur mais a été acquise via votre webcam.
 
@@ -373,7 +370,7 @@ cv2.waitKey(0)
 
 Ajouter une ou une combinaison de ces 3 lignes dans le script précédent afin de voir leur effet. Vous pourrez jouer sur les différents paramètres afin de mesurer son effet sur le résultat.
 
-### Histogramme d'une image
+## Histogramme d'une image
 
 L'histrogramme représente la distribution des valeurs de tous les pixels de tout ou partie d'une image. OpenCV propose de calculer cet histrogramme avec la fonction cv2.calcHist() de la manière suivante :
 ```
