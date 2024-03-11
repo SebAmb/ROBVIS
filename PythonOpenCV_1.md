@@ -1,6 +1,6 @@
-## Reconnaissance d'objets
+# Introduction en traitement et analyse des images pour des applications de robotique - Reconnaissance d'objets
 
-### Par l'histogramme
+## Reconnaissance par analyse de l'histogramme
 
 L'histogramme peut être utilisé pour détecter un objet particulier. L'idée est de retrouver l'objet d'intérêt en faisant l'hypothèse que dans l'image, cet objet aura un histrogramme assez proche. Evidemment l'histrogramme peut être différent car, par exemple, l'objet peut être vu d'un autre point de vue, ou il peut être plus petit. Donc l'hypothèse sera d'étudier la similarité entre l'histogramme de l'objet requête et l'histrogramme d'une région de l'image dans laquelle l'objet pourrait être présent. Pour cela nous utilisons la fonction ```cv.CompareHIst(hist_requete,hist_candidat,method)``` où method prend l'une des valeurs suivantes cv2.HISTCMP_CORREL (0), cv2.HISTCMP_CHISQR (1), cv2.HISTCMP_INTERSECT(2) ou cv2.HISTCMP_BHATTACHARYYA (3). Tester les lignes de codes suivantes :
 ```
@@ -87,7 +87,7 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 ```
 
-### Synthèse
+## Synthèse : exercice à réaliser
 
 Ecrire un script capable de retrouver dans le flux de votre webcam une région de l'image que vous aurez préalablement sélectionnée à l'aide de votre souris.
 Il pourra s'agir d'un élément de votre visage par exemple (votre oeil, votre bouche ...).
