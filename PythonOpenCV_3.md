@@ -1,15 +1,12 @@
-# Introduction en traitement et analyse des images pour des applications de robotique (Partie 3)
-
-Attention cette année ce TP pourrait se faire sur [colab](https://colab.research.google.com/).
+# Introduction en traitement et analyse des images pour des applications de robotique - Segmentation des images
 
 ## Segmentation des images par la méthodes des k-moyennes (kmeans)
 
-Kmeans est un algorithme de clustering, dont l'objectif est de partitionner n points de données en k grappes. Chacun des n points de données sera assigné à un cluster avec la moyenne la plus proche. La moyenne de chaque groupe s'appelle «centroïde» ou «centre». Globalement, l'application de k-means donne k grappes distinctes des n points de données d'origine. Les points de données à l'intérieur d'un cluster particulier sont considérés comme «plus similaires» les uns aux autres que les points de données appartenant à d'autres groupes. Cet algorithme peut être appliquer sur des points d’origine géométrique, colorimétriques et autres. 
+Kmeans est un algorithme de clustering, dont l'objectif est de partitionner n points de données en k groupes (ou clusters) de manière non supervisée i.e. sans connaissance a priori de la distribution des couleur par groupe. Chaque groupe est défini par une moyenne dans l'espace de représentation des données. La moyenne de chaque groupe s'appelle "centroïde" ou "centre". Chacun des n points de données sera donc assigné à un des k clusters avec la moyenne la plus proche. Les points de données à l'intérieur d'un cluster particulier sont considérés comme "plus similaires" les uns aux autres que les points de données appartenant à d'autres groupes. Cet algorithme peut être appliquer sur des points d’origine géométrique, colorimétriques ou provenant d'autres origines.
 
-Nous allons appliquer cette méthode afin d'assurer une segmentation couleur d'une image i.e. cela revient à trouver les couleur domainantes dans l'image.
+Nous allons appliquer cette méthode afin d'assurer la segmentation couleur d'une image. Ce processus revient à trouver les couleur dominantes dans l'image. Vous pouvez réaliser cette segmentation non supervisée soit avec la bibliothèque sklearn ou opencv. Dans ce qui suit nous utiliserons opencv.
 
 ```
-from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
@@ -22,55 +19,32 @@ plt.axis("off")
 plt.imshow(image)
 ```
 
-Afin de traiter l’image en tant que point de données avec la fonction de clustering, il faut la convertir la forme matricielle de l'image en une forme vectorielle :
+Afin de traiter l’image en tant que point de données avec la fonction de clustering, il faut la convertir la forme matricielle de l'image en une forme vectorielle. Cette forme est contenue dans la variable vectorized :
 
 ```
-n_clusters=5
-image = image.reshape((image.shape[0] * image.shape[1], 3))
-clt = KMeans(n_clusters = n_clusters )
-clt.fit(image)
+vectorized = img.reshape((-1,3))
+vectorized = np.float32(vectorized)
+vectorized.shape
 ```
-
-Pour afficher les couleurs les plus dominantes dans l'image, il faut définir deux fonctions : centroid_histogram() pour récupérer le nombre de clusters
-différents et créer un histogramme basé sur le nombre de pixels affectés à chaque cluster ; et plot_colors() pour initialiser le graphique à barres représentant la fréquence relative de chacune des couleurs
+L'algorithme de clustering est ensuite applique à ce vecteur avec certains paramètres : K représente le nombre de groupes à estimer, nbtimes est le nombre de fois que l'algorithme est appliqué au vecteur avec une initialisation différente et criteria représente le ou les critères que l'algorithme doit remplir pour considérer que son estimation est optimale.
 
 ```
-def centroid_histogram(clt):
-    numLabels = np.arange(0, len(np.unique(clt.labels_)) + 1)
-    (hist, _) = np.histogram(clt.labels_, bins=numLabels)
+# 4 groupes recherchées
+K = 4
+# Lancer 10 fois l'algorithme avec une initialisation différente
+nbtimes=10
+# critères d'arrêt : combinaison entre la précision = 1 et le nombre d'itération = 10
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
 
-    # normalize the histogram, such that it sums to one
-    hist = hist.astype("float")
-    hist /= hist.sum()
-
-    return hist
-
-def plot_colors(hist, centroids):
-    bar = np.zeros((50, 300, 3), dtype="uint8")
-    startX = 0
-
-    # loop over the percentage of each cluster and the color of
-    # each cluster
-    for (percent, color) in zip(hist, centroids):
-        # plot the relative percentage of each cluster
-        endX = startX + (percent * 300)
-        cv2.rectangle(bar, (int(startX), 0), (int(endX), 50),
-                      color.astype("uint8").tolist(), -1)
-        startX = endX
-
-    return bar
+# Lancement du clustering
+# KMEANS_PP_CENTERS définit la méthode d'initialisation des groupes
+# KMEANS_RANDOM_CENTERS est une autre méthode d'initialisation
+compactness,labels,centers=cv2.kmeans(vectorized,K,None,criteria,attempts,cv2.KMEANS_PP_CENTERS)
+center = np.uint8(centers)
+res = centers[label.flatten()]
+result_image = res.reshape((img_convert.shape))
 ```
 
-Il suffit maintenant de construire un histogramme de clusters puis créer une figure représentant le nombre de pixels étiquetés pour chaque couleur.
-
-```
-hist = centroid_histogram(clt)
-bar = plot_colors(hist, clt.cluster_centers_)
-plt.figure()
-plt.axis("off")
-plt.imshow(bar)
-plt.show()
-```
 
 ## Utilisation des réseaux convolutifs sous opencv
 
