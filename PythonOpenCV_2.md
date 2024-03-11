@@ -1,6 +1,4 @@
-# Introduction en traitement et analyse des images pour des applications de robotique (Partie 2)
-
-Attention cette année ce TP pourrait se faire sur [colab](https://colab.research.google.com/).
+# Introduction en traitement et analyse des images pour des applications de robotique - Détection d'objets
 
 ## Détection d'ensemble de pixels connexes
 
