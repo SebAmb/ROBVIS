@@ -381,8 +381,7 @@ cv2.waitKey(0)
 ```
 
 Voici un petit script appliquant une erosion et une dilatation sur une image en couleur. Cela vous permet de jouer avec la forme du noyau (rectangle, croix ou ellipse) et sa taille.
-Modifier ce code pour qu'il prenne en compte une image en niveau de gris. Vous l'appliquerez sur les images suivantes afin de constater l'effet.
-
+Modifier ce code pour qu'il prenne en compte une image en niveau de gris. Vous l'appliquerez sur les images __imageasegmenter.jpg__ et __treestosegment.png__ afin de constater l'effet. Ces deux images sont  en couleur donc vous devrez dans un premier temps définir les seuils colorimétriques pour les binariser et ensuite appliquer les erosions et dilatations.
 
 ```
 import cv2 as cv
@@ -429,8 +428,6 @@ def morph_shape(val):
         return cv.MORPH_CROSS
     elif val == 2:
         return cv.MORPH_ELLIPSE
-
-
 
 def erosion(val):
     # Récupère la valeur de la taille du noyau du trackbar de la fenêtre title_erosion_window
