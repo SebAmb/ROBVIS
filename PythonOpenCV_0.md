@@ -326,8 +326,10 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 ```
+## Débruitage et post-traitements avec opérateurs morphologiques
 
 Après avoir produite le mask avec ```mask=cv2.inRange(image, lo, hi)``` il est parfois pertinant de débruiter l'image en appliquant un opérteur de lissage par exemple ou en appliquant quelques opérations morphologiques (ouverture, fermeture, erosion, dilatation) sur le mask obtenu.
+
 ```
 image=cv2.blur(image, (7, 7))
 image = cv2.GaussianBlur(image, (11, 11), 0)
@@ -341,7 +343,6 @@ Les opérateurs morphologiques nécessitent la définition d'un noyau (kernel), 
 Lorsque kernel est fixé à None, l'opérateur utilise un kernel par défaut. Voici quelques lignes à tester sur l'image world.png. Jouer avec la taille
 du kernel ou la variable iterations (le nombre de fois que l'érosion ou la dilatation est appliquée).
 
-
 ```
 import cv2
 import numpy as np
@@ -349,7 +350,7 @@ import numpy as np
 img = cv2.imread('world.png',0)
 img = cv2.resize(img,(450,450))
 
-# Défintion du kernel de l'érosion taille 5x5
+# Défintion du kernel de l'érosion : un rectangle de taille 5x5 avec que des 1
 kernel = np.ones((5,5),np.uint8)
 
 erosion = cv2.erode(img,kernel,iterations = 1)
@@ -377,6 +378,99 @@ cv2.imshow('Opening',opening)
 cv2.waitKey(0)
 
 ```
+
+Voici un petit script appliquant une erosion et une dilatation sur une image en couleur. Cela vous permet de jouer avec la forme du noyau (rectangle, croix ou ellipse) et sa taille.
+Modifier ce code pour qu'il prenne en compte une image en niveau de gris. Vous l'appliquerez sur les images suivantes afin de constater l'effet.
+
+```
+import cv2 as cv
+import numpy as np
+import argparse
+
+src = None
+
+erosion_size = 0
+
+max_elem = 2
+max_kernel_size = 21
+
+title_trackbar_element_shape = 'Element:\n 0: Rectangle \n 1: Croix \n 2: Ellipse'
+title_trackbar_kernel_size = 'Kernel size:\n 2n +1'
+title_erosion_window = 'Erosion Demo'
+title_dilation_window = 'Dilation Demo'
+
+def main(image):
+    global src
+    src = cv.imread(cv.samples.findFile(image))
+    if src is None:
+        print('Could not open or find the image: ', image)
+        exit(0)
+
+    cv.namedWindow(title_erosion_window)
+    cv.createTrackbar(title_trackbar_element_shape, title_erosion_window, 0, max_elem, erosion)
+    cv.createTrackbar(title_trackbar_kernel_size, title_erosion_window, 0, max_kernel_size, erosion)
+
+    cv.namedWindow(title_dilation_window)
+    cv.createTrackbar(title_trackbar_element_shape, title_dilation_window, 0, max_elem, dilatation)
+    cv.createTrackbar(title_trackbar_kernel_size, title_dilation_window, 0, max_kernel_size, dilatation)
+
+    erosion(0)
+    dilatation(0)
+    cv.waitKey()
+
+
+# optional mapping of values with morphological shapes
+def morph_shape(val):
+    if val == 0:
+        return cv.MORPH_RECT
+    elif val == 1:
+        return cv.MORPH_CROSS
+    elif val == 2:
+        return cv.MORPH_ELLIPSE
+
+
+
+def erosion(val):
+    # Récupère la valeur de la taille du noyau du trackbar de la fenêtre title_erosion_window
+    erosion_size = cv.getTrackbarPos(title_trackbar_kernel_size, title_erosion_window)
+    # Récupère le type de noyau désiré (rectangle,croix,ellipse)
+    shape_type = cv.getTrackbarPos(title_trackbar_element_shape, title_erosion_window)
+    # Récupération du type de shape du noyau
+    erosion_shape = morph_shape(shape_type)
+
+    # création du noyau
+    element = cv.getStructuringElement(erosion_shape, (2 * erosion_size + 1, 2 * erosion_size + 1),
+                                       (erosion_size, erosion_size))
+    
+    # Application de l'érosion avec l'élément strcturant précédent
+    erosion_dst = cv.erode(src, element)
+    
+    # affichage du résultat
+    cv.imshow(title_erosion_window, erosion_dst)
+
+def dilatation(val):
+    # Récupère la valeur de la taille du noyau du trackbar de la fenêtre title_dilation_window
+    dilatation_size = cv.getTrackbarPos(title_trackbar_kernel_size, title_dilation_window)
+    # Récupère le type de noyau désiré (rectangle,croix,ellipse)
+    dilatation_shape = cv.getTrackbarPos(title_trackbar_element_shape, title_dilation_window)
+    # Récupération du type de shape du noyau
+    dilation_shape = morph_shape(dilatation_shape)
+    
+    # création du noyau
+    element = cv.getStructuringElement(dilation_shape, (2 * dilatation_size + 1, 2 * dilatation_size + 1),
+                                       (dilatation_size, dilatation_size))
+    # Application de la dilatation avec l'élément strcturant précédent
+    dilatation_dst = cv.dilate(src, element)
+    # affichage du résultat
+    cv.imshow(title_dilation_window, dilatation_dst)
+
+
+if __name__ == "__main__":
+
+    main("./Bureau/fleur.png")
+```
+
+
 
 Ajouter une ou une combinaison de ces 3 lignes dans le script précédent afin de voir leur effet. Vous pourrez jouer sur les différents paramètres afin de mesurer son effet sur le résultat.
 
