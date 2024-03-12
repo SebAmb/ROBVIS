@@ -86,9 +86,11 @@ des paramètres suivants :
 * cv2.COLOR_BGR2HLS pour une conversion BGR vers Lab
 
 Les lignes de codes suivantes vous permettent de seuiller les composantes selons certaines valeurs afin de mettre en évidence
-que les parties de l'image qui vous intéressent. Dans cet exemple l'image est convertie en HSV afin d'opérer un seuillage sur la teinte (H).
+que les parties de l'image qui vous intéressent. Dans cet exemple l'image est convertie en HSV (teinte, saturation et luminance) afin d'opérer un seuillage sur la teinte (H).
+
 Dans un premier temps, sont définies les valeurs min et max pour le vert, le rouge et le bleu selon la représentation HSV : c'est
-pour cela que seule la première valeur varie...50/60 pour le vert, 170/180 pour le rouge et 110/120 pour le bleu.
+pour cela que seule la première valeur varie...50/60 pour le vert, 170/180 pour le rouge et 110/120 pour le bleu. La teinte prendra une valeur max de 180. La saturation et et la luminance pourront prendre une valeur max de 255.
+
 Puis trois masques sont produits à partir de ces 3 intervalles. Un masque est une image contenant des valeurs 1 ou 0 : un pixel prend la valeur 1 lorsque les valeurs HSV du pixels correspondant est dans l'un des intervalles définis précédemment. Ces trois masques sont finalement utilisés pour effacer les parties de l'image RGB qui ne respectent pas les contraintes colorimétriques imposées.
 
 ```
