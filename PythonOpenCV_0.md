@@ -326,7 +326,8 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 ```
-## Débruitage et post-traitements avec opérateurs morphologiques
+
+## Débruitage et post-traitements avec opérateurs morphologiques
 
 Après avoir produite le mask avec ```mask=cv2.inRange(image, lo, hi)``` il est parfois pertinant de débruiter l'image en appliquant un opérteur de lissage par exemple ou en appliquant quelques opérations morphologiques (ouverture, fermeture, erosion, dilatation) sur le mask obtenu.
 
@@ -381,6 +382,7 @@ cv2.waitKey(0)
 
 Voici un petit script appliquant une erosion et une dilatation sur une image en couleur. Cela vous permet de jouer avec la forme du noyau (rectangle, croix ou ellipse) et sa taille.
 Modifier ce code pour qu'il prenne en compte une image en niveau de gris. Vous l'appliquerez sur les images suivantes afin de constater l'effet.
+
 
 ```
 import cv2 as cv
