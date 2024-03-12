@@ -48,11 +48,17 @@ cv2.imshow("Image", image)
 cv2.waitKey(0)
 ```
 
-A partir du script d'acquisition que M. Boonaert vous a remis et notamment de la fonction ```GrabImageFromCam```
-créer la fonction ```DisplayImage()``` permettant d'afficher dans une fenêtre OpenCV l'image que vous venez d'acquérir.
-Ajouter cette fonction dans un nouveau script que vous nommerez ```ComputerVisionNom1Nom2.py```
-(Nom1 et Nom2 sont les noms des étudiants de votre groupe)
-Ce script pourra contenir toutes les fonctions que vous aurez développées pour le projet de cette UV.
+Pour affichage, préférer l'utilisation de la librairie matplotlib avec les lignes suivantes :
+```
+from matplotlib import pyplot as plt
+
+img_c = cv.imread('shape_noise.png')
+img = cv.cvtColor(img_c, cv.COLOR_BGR2GRAY)
+
+plt.figure()
+plt.imshow(img_c)
+plt.show()
+```
 
 ## Traitement et analyse couleur
 
