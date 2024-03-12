@@ -55,7 +55,6 @@ from matplotlib import pyplot as plt
 img_c = cv.imread('shape_noise.png')
 img = cv.cvtColor(img_c, cv.COLOR_BGR2GRAY)
 
-plt.figure()
 plt.imshow(img_c)
 plt.show()
 ```
@@ -131,7 +130,9 @@ res_g = cv2.bitwise_and(image,image, mask= mask_g)
 res_r = cv2.bitwise_and(image,image, mask= mask_r)
 
 # affichage de l'image après sélection de la partie "verte" de l'image
-cv2.imshow('Green',res_g)
+plt.imshow(res_g)
+plt.title('Freen')
+plt.show()
 ```
 
 ## Binarisation d'une image en niveau de gris
@@ -236,7 +237,10 @@ Voici quelques lignes de codes pour extraire une région d'intérêt à la souri
 ```
 import cv2
 import numpy as np
- 
+
+# La ligne qui suit est le point d'entrée lorsque le script python est éxécuté.
+# Le script peut être importé comme un module et dans ce cas tout le code placé à la condition du if ne sera pas éxécuté. Toutefois, toutes les fonctions ou classes définies
+# avant le if seront accessibles après l'import.
 if __name__ == '__main__' :
  
     # initialisation de la webcam
