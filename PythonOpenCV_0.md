@@ -380,6 +380,10 @@ cv2.waitKey(0)
 
 ```
 
+Ajouter une ou une combinaison de ces 3 lignes dans le script précédent afin de voir leur effet. Vous pourrez jouer sur les différents paramètres afin de mesurer son effet sur le résultat.
+
+### Petit script ++
+
 Voici un petit script appliquant une erosion et une dilatation sur une image en couleur. Cela vous permet de jouer avec la forme du noyau (rectangle, croix ou ellipse) et sa taille.
 Modifier ce code pour qu'il prenne en compte une image en niveau de gris. Vous l'appliquerez sur les images __imageasegmenter.jpg__ et __treestosegment.png__ afin de constater l'effet. Ces deux images sont  en couleur donc vous devrez dans un premier temps définir les seuils colorimétriques pour les binariser et ensuite appliquer les erosions et dilatations.
 
@@ -469,9 +473,6 @@ if __name__ == "__main__":
     main("./Bureau/fleur.png")
 ```
 
-
-
-Ajouter une ou une combinaison de ces 3 lignes dans le script précédent afin de voir leur effet. Vous pourrez jouer sur les différents paramètres afin de mesurer son effet sur le résultat.
 
 ## Histogramme d'une image
 
