@@ -470,7 +470,12 @@ Cet exercice permettra d'apprendre un modèle à partir des images de la bases C
 http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz
 
 Décompresser les fichier dans un dossier que vous utiliserez dans le script suivant.
-Ici, le dossier est ./data
+Ici, le dossier est ./data (par exemple)
+
+Dans ce script, nous utilisons le modul pickle. Le module pickle implémente des protocoles binaires de sérialisation et dé-sérialisation d'objets Python.
+La sérialisation est le procédé par lequel une hiérarchie d'objets Python est convertie en flux d'octets. La désérialisation est l'opération inverse,
+par laquelle un flux d'octets (à partir d'un binary file ou bytes-like object) est converti en hiérarchie d'objets. Ici les fichiers binaires cifar regroupent
+l'ensemble des images et leurs annotations.
 
 ```
 import numpy as np
@@ -492,7 +497,9 @@ img_data = X[b'data']
 img_label_orig = img_label = X[b'labels']
 img_label = np.array(img_label).reshape(-1, 1)
 ````
+
 afin de vérifier que tout s'est bien passé utilisé :
+
 ```
 print(img_data)
 print('shape', img_data.shape)
