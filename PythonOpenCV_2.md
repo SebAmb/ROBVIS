@@ -528,9 +528,11 @@ print('shape', sample_img_data.shape)
 print('shape', sample_img_data[1,:].shape)
 ````
 Attention, lors de leur enregistrement  les composantes RGB des images sont arrangées sous la forme d'un vecteur à 1 dimension c'est-à-dire comme si vous aviez placer les pixels les uns derrières les autres..
-Pour afficher chaque image, il faut donc remettre sous la forme d'une image 2D RGB, c'est-à-dire les "reshaper". Pour cela, nous opérons de la manière suivante en considérant que les images avaient une résolution initiale de 32x32
+Pour afficher chaque image, il faut donc remettre sous la forme d'une image 2D RGB, c'est-à-dire les "reshaper". Pour cela, nous opérons de la manière suivante en considérant que les images avaient une résolution initiale de 32x32.
 
 ```
+# affichage de l'image 0
+# pour une autre image remplacer 0 par un autre entier
 one_img=sample_img_data[0,:]
 r = one_img[:1024].reshape(32, 32)
 g = one_img[1024:2048].reshape(32, 32)
