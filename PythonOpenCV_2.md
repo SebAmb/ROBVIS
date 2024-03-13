@@ -17,18 +17,26 @@ image2,elements,hierarchy=cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_AP
 # pour la version 4.x d'OpenCV
 #elements,hierarchy=cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+# len(elementsà renvoie le nombre de régions de pixels connexes détectés.
 if len(elements) > 0:
+
+    # sorted() permet de trier par ordre décroissant les instances de elements en fonction de leur surface
     c=sorted(elements, key=cv2.contourArea)
+
+    # défini le cercle minimum qui couvre complètement l'objet avec une surface minimale
     ((x, y), rayon)=cv2.minEnclosingCircle(c[1600])
+
+    # Affichage
     cv2.circle(image, (int(x), int(y)), int(rayon), [0,0,255], 2)
     cv2.putText(image, "Objet !!!", (int(x)+10, int(y) -10), cv.FONT_HERSHEY_DUPLEX, 1, [0,255,0], 1, cv.LINE_AA)
 ```
-Tester ces quelques sur l'image ***imageasegmenter.jpg***
+Tester ces quelques sur l'image ***imageasegmenter.jpg*** et ***treestosegment.png***.
 
-Comparer ce résultat avec celui obtenu après avoir appliquer des opérations morphologiques. Par exemple, pour supprimer les petits ensembles vous pouvez appliquer des ouvertures ou une succession de plusieurs érosions et autant de dilatations (pour récupérer la taille initiale des régions que vous souhaitez garder).
+Comparer ces résultats avec ceux obtenus après avoir appliquer des opérations morphologiques. Par exemple, pour supprimer les petits ensembles vous pouvez appliquer des ouvertures ou une succession de plusieurs érosions et autant de dilatations (pour récupérer la taille initiale des régions que vous souhaitez garder).
 
-Il vous est possible d'afficher tout ou partie des ensembles de pixels connexes en utilisant la fonction ```cv.drawContours()```. Par exemple pour les  afficher en couleur vert dans la variable ***image*** il suffit d'utiliser ```cv.drawContours(image, elements, -1, (0,255,0), 3)```. Si vous souhaitez afficher le 1600ème ensemble de pixels connexes (en rouge)~: 
+Il vous est possible d'afficher tout ou partie des ensembles de pixels connexes en utilisant la fonction ```cv.drawContours()```. Par exemple pour les  afficher en couleur vert (0,255,0) dans la variable ***image*** il suffit d'utiliser ```cv.drawContours(image, elements, -1, (0,255,0), 3)```. Si vous souhaitez afficher le 1600ème ensemble de pixels connexes cette fois en rouge (0,0,255) : 
 ```
+# La région que vous souhaitez afficher
 cnt = elements[1600]
 cv.drawContours(img, [cnt], 0, (0,0,255), 3)
 ```
@@ -37,19 +45,21 @@ Il peut être également très utilie de produire le mask correspondant à l'un 
 
 ```
 mask = np.zeros(im.shape,np.uint8)
-cv.drawContours(mask,[cnt[1600]],0,255,-1)
+cv.drawContours(mask,[elements[1600]],0,255,-1)
 ```
-Une fois que vous avez extrait tous les ensembles de pixels connexes dans l'image binarisée, il peut s'avérer très utile d'en extraire des caractéristiques de forme :
+Une fois que vous avez extrait tous les ensembles de pixels connexes dans l'image binarisée, il peut s'avérer très utile d'en extraire des caractéristiques de forme afin de déterminer par exemple un classifieur d'objets :
 
 * Rapport d'aspect
 ```
 x,y,w,h = cv.boundingRect(c[1600])
 aspect_ratio = float(w)/h
 ```
+
 * Valeur max, valeur min et leur position dans l'image en utilisant le mask d'un ensembe de pixels connexes
 ```
 min_val, max_val, min_loc, max_loc = cv.minMaxLoc(image,mask = mask)
 ```
+
 * Orientation du grand axe de l'ellipse qui approxime la forme d'un ensemble de pixels
 ```
 (x,y),(MA,ma),angle = cv.fitEllipse(c[1600])
@@ -59,6 +69,7 @@ min_val, max_val, min_loc, max_loc = cv.minMaxLoc(image,mask = mask)
 ```
 mean_val = cv.mean(im,mask = mask)
 ```
+
 Tous ces paramètres sont utilies pour caractériser la forme représentée par un ensemble de pixels connexes. Un ensemble de ces paramètres peut être calculé et être regroupé dans un vecteur qui caractérisera la forme en question. Ainsi toute forme "segmentée" peut être résumée par un vecteur dans l'espace de ces caractéristiques.  L'idée sous-jacente est de trouver des sous-régions de cet espace qui regrouperaient les ensembles de pixels connexes dont la géométrie serait similaire (donc appartenant hypothétiquement à une même classe)
 
 D'autres caractéristiques existent. MATLAB en proposent d'autres que vous pourriez implanter et utiliser à l'avenir : http://www.mathworks.in/help/images/ref/regionprops.html
@@ -105,6 +116,7 @@ plt.show()
 
 cv2.waitKey(0)
 ```
+
 ## Reconnaissance d'objets par feature matching
 
 L'appariement de caractéristiques est un groupe d'algorithmes qui jouent un rôle important dans certaines applications de vision par ordinateur. L'idée principale est d'extraire des caractéristiques particulières d'une image d'entraînement (qui contient un objet spécifique) et d'extraire ces mêmes caractéristique d'une autre images comportant ou non cet objet afin de le retrouver et de le localiser le cas échéant. Si des similitudes existent entre la distribution spatiale de ces caractéristiques alors il est probable que l'objet se trouve dans l'image testée.
@@ -183,6 +195,7 @@ cv2.destroyAllWindows()
 ```
 
 Certains auteurs ont proposé de combiner FAST et BRIEF mais en améliorant la robustesse de FAST aux effets d'échelle et en ajoutant une certaine invariance à la rotation et en rendant BRIEF invariant aux rotations. Il s'agit de l'algorithme **ORB** (Oriented FAST and Rotated BRIEF). Voici quelques lignes de codes pour extraire les features ORB :
+
 ```
 import cv2
 import matplotlib.pyplot as plt
@@ -212,6 +225,7 @@ cv2.destroyAllWindows()
 ```
 
 Lorsque la fonction ```ORB()``` est appliquée à l'image de l'objet à retrouver les variables ** keypoints** et **descriptor** constituent son modèle que nous allons tenter de retrouver grâce à une fonction de mise en correspondance (```bruteForce()```) grâce aux lignes suivantes. Cette fois, nous allons chargé deux images desquelles nous allons extraire les keypoints et les descripteurs que nous allons ensuite tenter de matcher.
+
 ```
 import cv2
 import matplotlib.pyplot as plt
@@ -449,7 +463,6 @@ cv2.destroyAllWindows()
 ```
 
 Après avoir bien compris chaque étape de ce script, modifer le afin d'insérer les images provenant de votre flux caméra ou celles de la video chris.mp4 ou de toute autre vidéo en votre possession..
-
 
 ## Classification d'images par la mathode des K plus proches voisins (k-NN ou KNN)
 
