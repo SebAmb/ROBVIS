@@ -467,7 +467,8 @@ Après avoir bien compris chaque étape de ce script, modifer le afin d'insérer
 ## Classification d'images par la mathode des K plus proches voisins (k-NN ou KNN)
 
 Cet exercice permettra d'apprendre un modèle à partir des images de la bases CIFAR-10 téléchargeable ici:
-http://www.cs.toronto.edu/~kriz/cifar.html
+http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz
+
 Décompresser les fichier dans un dossier que vous utiliserez dans le script suivant.
 Ici, le dossier est ./data
 
