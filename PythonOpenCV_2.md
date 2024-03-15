@@ -251,7 +251,7 @@ test_keypoints, test_descriptor = orb.detectAndCompute(gray_2, None)
 
 #Draw the found Keypoints of the main image
 cv2.drawKeypoints(image_1, train_keypoints, preview_1, flags = cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-cv2.drawKeypoints(image_1, train_keypoints, dots, flags=cv2.NOT_DRAW_SINGLE_POINTS)
+cv2.drawKeypoints(image_1, train_keypoints, dots, flags=cv2.DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS)
 
 #############################################
 ########## Mise en correspondance ###########
