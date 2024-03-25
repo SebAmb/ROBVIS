@@ -6,9 +6,12 @@ Dans ce TP nous allons écrire un algorithme capable de différencer une peronne
 Pour cela, nous allons exploiter le squelette de la personne présente dans l'image dont la position relatives des jointures va vous permettre
 de déterminer dans quelle posture le personne se trouve. Le squelette est extrait grâce à un réseau  de neurones qui a gagné le challenge COCO en 2016.
 
-L'architecture du réseau est la suvante : https://github.com/SebAmb/ROBVIS/openposeArchi.png
+L'architecture du réseau est la suvante :
 
-et vous trouverez l'article scientifique dans le pdf suivant : https://github.com/SebAmb/ROBVIS/openpose.pdf
+![Architecture Openpose](openposeArchi.png)
+
+et vous trouverez l'article scientifique dans le pdf suivant : 
+![Article](openpose.pdf)
 
 Le sequelette d'un individu est constitué de 17 jointures et une dernière jointure qui représente le fond de l'image : Nose – 0, Neck – 1, Right Shoulder – 2, Right Elbow – 3,
 Right Wrist – 4, Left Shoulder – 5, Left Elbow – 6, Left Wrist – 7, Right Hip – 8, Right Knee – 9, Right Ankle – 10, Left Hip – 11, Left Knee – 12, LAnkle – 13, Right Eye – 14,
@@ -19,8 +22,7 @@ Tout comme le TP précédent, vous trouverez les poids du réseau pré-entraîn�
 Le fichier zip regroupe 5 jeux de poids qui son pour chacun le résultat de l'entraînement après un nombre différent d'itérations.
 Vous testerez chacun d'entre eux et vous en choisirez un pour la suite du TP.
 
-A vous de produire le script de testSkeleton.py sur la base des codes du TP précédent. Le format de sauvegarde des poids étant le format Caffe vous aurez besoin des deux fichiers .prototxt et le .caffemodel
-auquel j'ai fait référence précédemmet.
+**A réaliser** : A vous de produire le script de *testSkeleton.py* sur la base des codes du TP précédent qui permettra d'inférer le réseau pré-entraîné sur une image. Le format de sauvegarde des poids étant le format Caffe vous aurez besoin des deux fichiers .prototxt et le .caffemodel auquel j'ai fait référence précédemmet.
 
 Attention la sortie du réseau après inférence sur une image est une instance de la classe : numpy.ndarray
 
@@ -28,9 +30,7 @@ Par exemple, si je note ```output=net.forward()``` alors ```output[0, i, x, y]``
 
 Donc ```probMap = output[0, i, :, :]``` est l'ensemble des probabilités d'appartenance à la jointure **i** pour tous les pixels de l'image.
 
-Les dimensions de l'image de sortie sont  ```H = output.shape[2]``` et ```W = output.shape[3]```
-
-Il faut noter que H et W peuvent être différentes des dimensions de l'image d'entrée sur laquelle vous avez inféré le réseau.
+Les dimensions de l'image de sortie sont ```H = output.shape[2]``` et ```W = output.shape[3]```. Il faut noter que H et W peuvent être différentes des dimensions de l'image d'entrée sur laquelle vous avez inféré le réseau.
 
 Pour extraire la jointure **i** du squelette de l'individu, il nous faut donc extraire les positions **(x,y)** pour laquelle la probabilité est maximale.
 Pour cela nous utilisons la fonction minMaxLoc d'openCV :
@@ -80,5 +80,6 @@ Pour cela vous utiliserez le tableau suivant qui définit les relations entre jo
 ```POSE_PAIRS = [ [1,0],[1,2],[1,5],[2,3],[3,4],[5,6],[6,7],[1,8],[8,9],[9,10],[1,11],[11,12],[12,13],[0,14],[0,15],[14,16],[15,17]]```
 
 Pour l'image **debout.png** vous aurez le résultat **output-jointures.jpg**.
+![debout.png](debout.png)
 
-
+![output-jointures.jpg](output-jointures.jpg)
