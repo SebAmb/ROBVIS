@@ -39,7 +39,7 @@ Pour cela nous utilisons la fonction minMaxLoc d'openCV :
 minVal, prob, minLoc, point = cv2.minMaxLoc(probMap)
 ```
 
-Ainsi vous utiliserez le code suivant pour afficher un cercle en chaque jointure du squelette :
+**A réaliser** : Ainsi vous utiliserez le code suivant pour afficher un cercle en chaque jointure du squelette :
 
 ```
 points = []
@@ -74,12 +74,16 @@ cv2.waitKey(0)
 
 ```
 
-Vous allez ensuite modifier ce code pour relier par paire les jointures. Vous afficherez ces liaisons dans une autre image que vous appellerez output-squelette.
+**A réaliser** : modifier ce code pour relier par paire les jointures. Vous afficherez ces liaisons dans une autre image que vous appellerez output-squelette.
 
 Pour cela vous utiliserez le tableau suivant qui définit les relations entre jointures :
 ```POSE_PAIRS = [ [1,0],[1,2],[1,5],[2,3],[3,4],[5,6],[6,7],[1,8],[8,9],[9,10],[1,11],[11,12],[12,13],[0,14],[0,15],[14,16],[15,17]]```
 
-Pour l'image **debout.png** vous aurez le résultat **output-jointures.jpg**.
-![debout.png](debout.png)
+**Résultats à obtenir**
 
-![output-jointures.jpg](output-jointures.jpg)
+Pour l'image **debout.png** vous aurez le résultat **Output-jointures.jpg** et**Output-squelette.jpg**.
+![debout.png](debout.png "debout.png")
+
+![output-jointures.jpg](Output-jointures.jpg "Output-jointures.jpg")
+
+![output-squelette.jpg](Output-squelette.jpg "Output-squelette.jpg")
