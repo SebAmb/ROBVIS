@@ -1,6 +1,6 @@
 # Introduction en traitement et analyse des images pour des applications de robotique - Détection de la posture d'une personne
 
-## Utilisation des réseaux convolutifs sous opencv
+## Introduction
 
 Dans ce TP nous allons écrire un algorithme capable de différencer une peronne debout d'une personne assise dans une image.
 Pour cela, nous allons exploiter le squelette de la personne présente dans l'image dont la position relatives des jointures va vous permettre
@@ -87,3 +87,9 @@ Pour l'image **debout.png** vous aurez le résultat **Output-jointures.jpg** et*
 ![output-jointures.jpg](Output-jointures.jpg "Output-jointures.jpg")
 
 ![output-squelette.jpg](Output-squelette.jpg "Output-squelette.jpg")
+
+## Classification personne debout/personne couchée
+
+Il s'agit désormais de déterminer un processus de décision qui permettra de déterminer si une personne est debout ou couchée.
+Cette règle de décision devra être définie en fonction de la position relative des jointures dans l'image.
+Pour y parvenir vous utiliserez les images de la base 
