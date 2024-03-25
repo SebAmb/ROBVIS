@@ -92,4 +92,11 @@ Pour l'image **debout.png** vous aurez le résultat **Output-jointures.jpg** et*
 
 Il s'agit désormais de déterminer un processus de décision qui permettra de déterminer si une personne est debout ou couchée.
 Cette règle de décision devra être définie en fonction de la position relative des jointures dans l'image.
-Pour y parvenir vous utiliserez les images de la base 
+Pour y parvenir vous utiliserez les images de la base  FPDS que vous pourrez télécharger ici : https://gram.web.uah.es/data/datasets/fpds/index.html
+
+Pour définir le modèle vous utiliserez les images de la base d'entraînement : https://universidaddealcala-my.sharepoint.com/:u:/g/personal/gram_uah_es/EXQImG_yi5xOifMZYz79_hcBlxATrYEZP5mCu-li4dcWDw?&Download=1
+
+Pour tester le modèle,vous utiliserez les images de la base de test : https://universidaddealcala-my.sharepoint.com/:u:/g/personal/gram_uah_es/EXYxgnEftbtCp2iCgAaWDDQBcAuouxLrV_2kxBDalj3m4w?&Download=1
+
+A vous de choisir l'un des outils de modélisation présentés dans les TP précédents.
+
