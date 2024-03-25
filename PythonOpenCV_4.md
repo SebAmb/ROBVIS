@@ -49,7 +49,7 @@ inWidth = 368
 inHeight = 368
 
 for i in range(18):
-    # Tableau des probabilités pôru la jointure i
+    # Tableau des probabilités pour la jointure i
     probMap = output[0, i, :, :]
 
     # Le max global des probabilités
@@ -78,5 +78,7 @@ Vous allez ensuite modifier ce code pour relier par paire les jointures. Vous af
 
 Pour cela vous utiliserez le tableau suivant qui définit les relations entre jointures :
 ```POSE_PAIRS = [ [1,0],[1,2],[1,5],[2,3],[3,4],[5,6],[6,7],[1,8],[8,9],[9,10],[1,11],[11,12],[12,13],[0,14],[0,15],[14,16],[15,17]]```
+
+Pour l'image **debout.png** vous aurez le résultat **output-jointures.jpg**.
 
 
