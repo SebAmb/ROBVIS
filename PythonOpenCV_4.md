@@ -22,7 +22,7 @@ Tout comme le TP précédent, vous trouverez les poids du réseau pré-entraîn�
 Le fichier zip regroupe 5 jeux de poids qui son pour chacun le résultat de l'entraînement après un nombre différent d'itérations.
 Vous testerez chacun d'entre eux et vous en choisirez un pour la suite du TP.
 
-**A réaliser** : A vous de produire le script de *testSkeleton.py* sur la base des codes du TP précédent qui permettra d'inférer le réseau pré-entraîné sur une image. Le format de sauvegarde des poids étant le format Caffe vous aurez besoin des fichiers pose_deploy_linevec.prototxt et d'un des 4 fichiers .caffemodel auxquels j'ai fait référence précédemmet.
+**A réaliser** : A vous de produire le script de *testSkeleton.py* sur la base des codes du TP précédent qui permettra d'inférer le réseau pré-entraîné sur une image. Le format de sauvegarde des poids étant le format Caffe vous aurez besoin des fichiers *pose_deploy_linevec.prototxt* et du fichier *pose_iter_440000.caffemodel* auquel j'ai fait référence précédemmet.
 
 Attention la sortie du réseau après inférence sur une image est une instance de la classe : numpy.ndarray
 
